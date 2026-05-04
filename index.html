@@ -880,17 +880,20 @@ document.getElementById('btn-compare').addEventListener('click', () => {
 
 document.getElementById('btn-print').addEventListener('click', () => window.print());
 
-document.getElementById('btn-refresh').addEventListener('click', async () => {
+(function() {
   const btn = document.getElementById('btn-refresh');
-  btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
-  try {
-    if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
-      await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
-      btn.textContent = '✓ Coleta disparada — peça pra reconstruir o painel';
-    } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
-  } catch (e) { btn.textContent = '✗ Falha'; }
-  setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
-});
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
+    try {
+      if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
+        await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
+        btn.textContent = '✓ Coleta disparada — peça pra reconstruir o painel';
+      } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
+    } catch (e) { btn.textContent = '✗ Falha'; }
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
+  });
+})();
 
 // ====== RANGE FILTER EVENTS ======
 document.querySelectorAll('.range-filter .quick').forEach(q => q.addEventListener('click', () => applyQuickRange(q.dataset.quick)));
