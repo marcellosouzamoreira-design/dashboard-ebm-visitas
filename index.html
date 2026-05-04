@@ -3,11 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Dashboard EBM de Visitas aos Stands NOW - acompanhamento mensal">
-<meta name="robots" content="noindex, nofollow">
-<meta property="og:title" content="EBM Visitas Stands NOW">
-<meta property="og:description" content="Painel de acompanhamento de visitas aos stands de venda">
-<meta property="og:type" content="website">
 <title>EBM — Painel de Visitas aos Stands NOW</title>
 <script>
 /*!
@@ -357,8 +352,8 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">03/05/2026 03:18</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
-    <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+    <span>Última coleta: <strong id="last-updated">03/05/2026 22:41</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span style="font-size:11px;color:var(--gray-500)">Atualizacao automatica diaria as 00:30</span>
   </footer>
 
 <script>
@@ -383,35 +378,61 @@ const REPORTADOR_STANDS = {
   Renato:  ['NOW BSB']
 };
 
-// ===DATA-START=== auto-atualizado pela scheduled task dashboard-visitas-rebuild; não edite entre os marcadores
+// ===DATA-START=== auto-atualizado pela scheduled task dashboard-visitas-rebuild; nao edite entre os marcadores
 const allDays = [
-  { dia:'11/03', mes:'marco', v:[6,0,1,4,1] },{ dia:'12/03', mes:'marco', v:[3,1,3,4,4] },
-  { dia:'13/03', mes:'marco', v:[2,1,4,11,2] },{ dia:'14/03', mes:'marco', v:[0,0,7,20,8] },
-  { dia:'15/03', mes:'marco', v:[0,0,8,23,1] },{ dia:'16/03', mes:'marco', v:[7,2,3,0,3] },
-  { dia:'17/03', mes:'marco', v:[3,1,2,12,5] },{ dia:'18/03', mes:'marco', v:[7,0,6,0,5] },
-  { dia:'19/03', mes:'marco', v:[6,0,10,0,4] },{ dia:'20/03', mes:'marco', v:[6,0,5,3,6] },
-  { dia:'21/03', mes:'marco', v:[8,2,15,7,17] },{ dia:'22/03', mes:'marco', v:[6,0,3,0,3] },
-  { dia:'23/03', mes:'marco', v:[5,1,5,0,5] },{ dia:'24/03', mes:'marco', v:[7,2,0,0,4] },
-  { dia:'25/03', mes:'marco', v:[3,0,4,7,4] },{ dia:'26/03', mes:'marco', v:[4,2,10,0,9] },
-  { dia:'27/03', mes:'marco', v:[5,4,1,3,7] },{ dia:'28/03', mes:'marco', v:[12,0,0,51,15] },
-  { dia:'29/03', mes:'marco', v:[1,0,0,0,1] },{ dia:'30/03', mes:'marco', v:[1,0,0,0,5] },
+  { dia:'11/03', mes:'marco', v:[6,0,1,4,1] },
+  { dia:'12/03', mes:'marco', v:[3,1,3,4,4] },
+  { dia:'13/03', mes:'marco', v:[2,1,4,11,2] },
+  { dia:'14/03', mes:'marco', v:[0,0,7,20,8] },
+  { dia:'15/03', mes:'marco', v:[0,0,8,23,1] },
+  { dia:'16/03', mes:'marco', v:[7,2,3,0,3] },
+  { dia:'17/03', mes:'marco', v:[3,1,2,12,5] },
+  { dia:'18/03', mes:'marco', v:[7,0,6,0,5] },
+  { dia:'19/03', mes:'marco', v:[6,0,10,0,4] },
+  { dia:'20/03', mes:'marco', v:[6,0,5,3,6] },
+  { dia:'21/03', mes:'marco', v:[8,2,15,7,17] },
+  { dia:'22/03', mes:'marco', v:[6,0,3,0,3] },
+  { dia:'23/03', mes:'marco', v:[5,1,5,0,5] },
+  { dia:'24/03', mes:'marco', v:[7,2,0,0,4] },
+  { dia:'25/03', mes:'marco', v:[3,0,4,7,4] },
+  { dia:'26/03', mes:'marco', v:[4,2,10,0,9] },
+  { dia:'27/03', mes:'marco', v:[5,4,1,3,7] },
+  { dia:'28/03', mes:'marco', v:[12,0,0,51,15] },
+  { dia:'29/03', mes:'marco', v:[1,0,0,0,1] },
+  { dia:'30/03', mes:'marco', v:[1,0,0,0,5] },
   { dia:'31/03', mes:'marco', v:[0,0,3,1,0] },
-  { dia:'01/04', mes:'abril', v:[8,1,0,0,0] },{ dia:'02/04', mes:'abril', v:[1,2,2,0,7] },
-  { dia:'03/04', mes:'abril', v:[1,2,0,0,0] },{ dia:'04/04', mes:'abril', v:[4,2,0,0,15] },
-  { dia:'05/04', mes:'abril', v:[4,1,0,0,1] },{ dia:'06/04', mes:'abril', v:[2,3,2,0,4] },
-  { dia:'07/04', mes:'abril', v:[2,1,6,0,8] },{ dia:'08/04', mes:'abril', v:[0,0,3,4,0] },
-  { dia:'09/04', mes:'abril', v:[4,1,2,2,0] },{ dia:'10/04', mes:'abril', v:[2,0,0,0,0] },
-  { dia:'11/04', mes:'abril', v:[9,4,10,3,0] },{ dia:'12/04', mes:'abril', v:[1,1,5,0,3] },
-  { dia:'13/04', mes:'abril', v:[5,1,1,4,0] },{ dia:'14/04', mes:'abril', v:[1,3,5,3,2] },
-  { dia:'15/04', mes:'abril', v:[7,1,7,5,1] },{ dia:'16/04', mes:'abril', v:[0,0,4,5,4] },
-  { dia:'17/04', mes:'abril', v:[3,1,7,6,2] },{ dia:'18/04', mes:'abril', v:[13,7,6,16,22] },
-  { dia:'19/04', mes:'abril', v:[3,0,2,1,3] },{ dia:'20/04', mes:'abril', v:[3,3,9,4,4] },
-  { dia:'21/04', mes:'abril', v:[10,1,5,5,4] },{ dia:'22/04', mes:'abril', v:[4,0,0,0,2] },
-  { dia:'23/04', mes:'abril', v:[4,1,6,4,8] },{ dia:'24/04', mes:'abril', v:[7,1,5,9,10] },
-  { dia:'25/04', mes:'abril', v:[10,5,11,18,22] },{ dia:'26/04', mes:'abril', v:[2,1,1,0,3] },
-  { dia:'27/04', mes:'abril', v:[14,2,0,0,9] },{ dia:'28/04', mes:'abril', v:[5,0,38,4,8] },
-  { dia:'29/04', mes:'abril', v:[14,1,9,3,8] },{ dia:'30/04', mes:'abril', v:[7,2,6,3,5] },
-  { dia:'01/05', mes:'maio', v:[0,0,0,0,1] },{ dia:'02/05', mes:'maio', v:[0,0,0,0,17] },
+  { dia:'01/04', mes:'abril', v:[8,1,0,0,0] },
+  { dia:'02/04', mes:'abril', v:[1,2,2,0,7] },
+  { dia:'03/04', mes:'abril', v:[1,2,0,0,0] },
+  { dia:'04/04', mes:'abril', v:[4,2,0,0,15] },
+  { dia:'05/04', mes:'abril', v:[4,1,0,0,1] },
+  { dia:'06/04', mes:'abril', v:[2,3,2,0,4] },
+  { dia:'07/04', mes:'abril', v:[2,1,6,0,8] },
+  { dia:'08/04', mes:'abril', v:[0,0,3,4,0] },
+  { dia:'09/04', mes:'abril', v:[4,1,2,2,0] },
+  { dia:'10/04', mes:'abril', v:[2,0,0,0,0] },
+  { dia:'11/04', mes:'abril', v:[9,4,10,3,0] },
+  { dia:'12/04', mes:'abril', v:[1,1,5,0,3] },
+  { dia:'13/04', mes:'abril', v:[5,1,1,4,0] },
+  { dia:'14/04', mes:'abril', v:[1,3,5,3,2] },
+  { dia:'15/04', mes:'abril', v:[7,1,7,5,1] },
+  { dia:'16/04', mes:'abril', v:[0,0,4,5,4] },
+  { dia:'17/04', mes:'abril', v:[3,1,7,6,2] },
+  { dia:'18/04', mes:'abril', v:[13,7,6,16,22] },
+  { dia:'19/04', mes:'abril', v:[3,0,2,1,3] },
+  { dia:'20/04', mes:'abril', v:[3,3,9,4,4] },
+  { dia:'21/04', mes:'abril', v:[10,1,5,5,4] },
+  { dia:'22/04', mes:'abril', v:[4,0,0,0,2] },
+  { dia:'23/04', mes:'abril', v:[4,1,6,4,8] },
+  { dia:'24/04', mes:'abril', v:[7,1,5,9,10] },
+  { dia:'25/04', mes:'abril', v:[10,5,11,18,22] },
+  { dia:'26/04', mes:'abril', v:[2,1,1,0,3] },
+  { dia:'27/04', mes:'abril', v:[14,2,0,0,9] },
+  { dia:'28/04', mes:'abril', v:[5,0,38,4,8] },
+  { dia:'29/04', mes:'abril', v:[14,1,9,3,8] },
+  { dia:'30/04', mes:'abril', v:[7,2,6,3,5] },
+  { dia:'01/05', mes:'maio', v:[0,0,0,0,1] },
+  { dia:'02/05', mes:'maio', v:[0,0,0,0,17] },
 ];
 
 const EVENTS = [
@@ -426,18 +447,18 @@ const EVENTS = [
 ];
 
 const PROSPECCAO = [
-  { name: 'Agendada',   value: 429 },
-  { name: 'Espontânea', value: 68 },
-  { name: 'Retorno',    value: 37 },
-  { name: 'Outros',     value: 9 },
+  { name:'Agendada', value:429 },
+  { name:'Espontanea', value:68 },
+  { name:'Retorno', value:37 },
+  { name:'Outros', value:9 },
 ];
 const PROSPECCAO_PERIODO = '08/04 a 02/05';
 
 const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03 a 31/03/2026', prev: null },
   { id:'abril', label:'Abril 2026', period:'01/04 a 30/04/2026', prev: 'marco' },
-  { id:'maio',  label:'Maio 2026',  period:'01/05 a 02/05/2026', prev: 'abril' },
-  { id:'total', label:'Total Geral',period:'11/03 a 02/05/2026', prev: null },
+  { id:'maio', label:'Maio 2026', period:'01/05 a 02/05/2026', prev: 'abril' },
+  { id:'total', label:'Total Geral', period:'11/03 a 02/05/2026', prev: null },
 ];
 // ===DATA-END===
 
