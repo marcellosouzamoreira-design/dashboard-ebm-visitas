@@ -539,7 +539,7 @@
     <span>Última coleta: <strong id="last-updated">09/05/2026 00:42</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Auto-update diário às 00:30</span>
+      <button class="refresh-btn" id="btn-refresh">↻ Atualizar dados</button>
     </div>
   </footer>
 
@@ -1308,18 +1308,7 @@ document.getElementById('btn-lang').addEventListener('click', () => {
 });
 
 document.getElementById('btn-help').addEventListener('click', () => {
-  alert('Atalhos:
-
-1-4: Trocar mês (Março/Abril/Maio/Total)
-M: Tema escuro/claro
-P: Modo apresentação
-C: Comparar mês anterior
-E: Exportar CSV
-R: Limpar filtros
-?: Esta ajuda
-
-Clique num stand do pódio pra filtrar.
-Clique num dia (heatmap, gráfico ou tabela) pra ver detalhes.');
+  alert('Atalhos: 1-4: Trocar mes (Marco/Abril/Maio/Total) | M: Tema escuro/claro | P: Modo apresentacao | C: Comparar mes anterior | E: Exportar CSV | R: Limpar filtros | ?: Esta ajuda. Clique num stand do podio pra filtrar. Clique num dia para ver detalhes.');
 });
 
 document.getElementById('btn-csv').addEventListener('click', exportCSV);
