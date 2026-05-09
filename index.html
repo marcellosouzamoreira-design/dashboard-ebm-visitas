@@ -539,7 +539,7 @@
     <span>Última coleta: <strong id="last-updated">09/05/2026 00:42</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <span style="font-size:11px;color:var(--gray-500)">Auto-update diário às 00:30</span>
     </div>
   </footer>
 
@@ -1047,12 +1047,10 @@ function saveDayComment(dia) {
 
 // === EXPORT CSV ===
 function exportCSV() {
-  let csv = 'Data,Reportador,Stand,Visitas
-';
+  let csv = 'Data,Reportador,Stand,Visitas\n';
   allDays.forEach(d => {
     STANDS.forEach((s,i) => {
-      if (d.v[i] > 0) csv += `${d.dia},${reportadorOf(s)},${s},${d.v[i]}
-`;
+      if (d.v[i] > 0) csv += `${d.dia},${reportadorOf(s)},${s},${d.v[i]}\n`;
     });
   });
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -1326,7 +1324,7 @@ Clique num dia (heatmap, gráfico ou tabela) pra ver detalhes.');
 
 document.getElementById('btn-csv').addEventListener('click', exportCSV);
 
-(document.getElementById('btn-refresh')||{addEventListener:()=>{}}).addEventListener('click', async () => {
+document.getElementById('btn-refresh').addEventListener('click', async () => {
   const btn = document.getElementById('btn-refresh');
   if (!btn) return;
   btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
