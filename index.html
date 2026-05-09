@@ -1313,18 +1313,20 @@ document.getElementById('btn-help').addEventListener('click', () => {
 
 document.getElementById('btn-csv').addEventListener('click', exportCSV);
 
-document.getElementById('btn-refresh').addEventListener('click', async () => {
+(function() {
   const btn = document.getElementById('btn-refresh');
   if (!btn) return;
-  btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
-  try {
-    if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
-      await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
-      btn.textContent = '✓ Coleta disparada — peça pra reconstruir';
-    } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
-  } catch (e) { btn.textContent = '✗ Falha'; }
-  setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
-});
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
+    try {
+      if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
+        await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
+        btn.textContent = '✓ Coleta disparada — peça pra reconstruir';
+      } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
+    } catch (e) { btn.textContent = '✗ Falha'; }
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
+  });
+})();
 
 document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q => q.addEventListener('click', () => applyQuickRange(q.dataset.quick)));
 document.querySelectorAll('#reportador-filters .filter-chip').forEach(c => c.addEventListener('click', () => toggleReportadorFilter(c.dataset.rep)));
