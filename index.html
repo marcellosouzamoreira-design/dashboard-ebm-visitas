@@ -727,8 +727,8 @@ let rangeStart = null, rangeEnd = null;
 let compareMode = false;
 let standFilter = null;       // novo: filtro por stand (clicar pódio)
 let reportadorFilter = null;  // novo: filtro por reportador
-let goalValue = parseInt(localStorage.getItem('ebm-goal')||'600', 10);
-let lang = localStorage.getItem('ebm-lang') || 'pt';
+let goalValue = 600; try { goalValue = parseInt(localStorage.getItem('ebm-goal')||'600', 10); } catch(e) {}
+let lang = 'pt'; try { lang = localStorage.getItem('ebm-lang') || 'pt'; } catch(e) {}
 let charts = {};
 let evoChart = null;
 
