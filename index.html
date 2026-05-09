@@ -7,6 +7,13 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EBM — Painel de Visitas aos Stands NOW</title>
+<meta name="description" content="Dashboard EBM de Visitas aos Stands NOW - acompanhamento mensal">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#003D6B">
+<meta property="og:title" content="EBM Visitas Stands NOW">
+<meta property="og:description" content="Painel de acompanhamento de visitas aos stands de venda">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='15' fill='%23003D6B'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='52' font-weight='bold' fill='%23A4001B' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
 <script>
 /*!
  * Chart.js v4.5.0
@@ -36,6 +43,7 @@
     --green: #047857; --amber: #B45309;
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
   }
   [data-theme="dark"] {
     color-scheme: dark;
@@ -51,72 +59,83 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg); color: var(--gray-900); font-size: 14px; line-height: 1.5;
-    transition: background .2s, color .2s;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--gray-900); font-size: 14px; line-height: 1.5; transition: background .25s, color .25s; }
 
-  /* HEADER (limpo) */
-  .header { background: var(--navy); color: #FFFFFF; padding: 14px 24px; border-bottom: 4px solid var(--wine); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  /* === SCROLL PROGRESS === */
+  .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: transparent; z-index: 100; }
+  .scroll-progress .bar { height: 100%; background: linear-gradient(90deg, var(--wine), var(--navy)); width: 0%; transition: width 0.1s; }
+
+  /* === HEADER === */
+  .header { background: var(--navy); color: #FFFFFF; padding: 12px 24px; border-bottom: 4px solid var(--wine); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   [data-theme="dark"] .header { background: var(--navy-dark); }
   .header h1 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: 0.3px; }
   .header .meta { font-size: 11px; opacity: 0.85; margin-top: 2px; }
-  .topbar-actions { display: flex; gap: 6px; }
-  .icon-btn { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); color: #FFFFFF; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
-  .icon-btn:hover { background: rgba(255,255,255,0.20); }
+  .topbar-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+  .icon-btn { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); color: #FFFFFF; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 5px; }
+  .icon-btn:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
+  .icon-btn:active { transform: translateY(0); }
   .icon-btn.on { background: var(--wine); border-color: var(--wine); }
 
-  /* STATUS BAR */
+  /* === STATUS BAR === */
   .status-bar { background: var(--bg-alt); border-bottom: 1px solid var(--gray-200); padding: 9px 24px; display: flex; gap: 28px; font-size: 12px; color: var(--gray-700); flex-wrap: wrap; }
   .status-item strong { color: var(--navy); font-weight: 700; font-size: 13px; }
   .status-item .pill { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-left: 4px; }
   .status-item .pill.up { background: rgba(4,120,87,0.12); color: var(--green); }
   .status-item .pill.down { background: rgba(164,0,27,0.12); color: var(--wine); }
 
-  /* TABS STICKY */
+  /* === PENDÊNCIAS BANNER === */
+  .pending-banner { background: linear-gradient(135deg, rgba(180,83,9,0.08), rgba(164,0,27,0.06)); border-bottom: 2px solid var(--amber); padding: 10px 24px; display: flex; gap: 12px; align-items: center; font-size: 12.5px; color: var(--gray-700); }
+  .pending-banner .ic { background: var(--amber); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+  .pending-banner strong { color: var(--amber); }
+  .pending-banner.hidden { display: none; }
+
+  /* === MONTH TABS === */
   .month-tabs { background: var(--panel); border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 24px; gap: 4px; overflow-x: auto; position: sticky; top: 0; z-index: 20; box-shadow: var(--shadow-sm); }
-  .mtab { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; border-bottom: 3px solid transparent; transition: all .15s; white-space: nowrap; letter-spacing: 0.3px; }
+  .mtab { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; white-space: nowrap; letter-spacing: 0.3px; }
   .mtab:hover { color: var(--navy); background: var(--gray-50); }
   .mtab.active { color: var(--navy); border-bottom-color: var(--wine); background: var(--gray-50); }
   .mtab .count { font-weight: 400; color: var(--gray-400); margin-left: 5px; font-size: 11px; }
   .mtab.active .count { color: var(--wine); }
 
-  /* RANGE FILTER */
-  .range-filter { background: var(--panel-alt); border-bottom: 1px solid var(--gray-200); padding: 9px 24px; display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--gray-700); flex-wrap: wrap; }
-  .range-filter label { font-weight: 600; }
-  .range-filter input[type=date] { background: var(--panel); border: 1px solid var(--gray-200); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--gray-900); font-family: inherit; }
-  .range-filter .clear { background: none; border: none; color: var(--wine); font-size: 11px; cursor: pointer; font-weight: 600; }
-  .range-filter .quick { background: var(--panel); border: 1px solid var(--gray-200); color: var(--gray-700); padding: 3px 9px; border-radius: 12px; font-size: 11px; cursor: pointer; font-weight: 500; }
-  .range-filter .quick:hover { border-color: var(--navy); color: var(--navy); }
-  .range-filter .quick.active { background: var(--navy); color: #FFFFFF; border-color: var(--navy); }
+  /* === FILTERS === */
+  .filter-bar { background: var(--panel-alt); border-bottom: 1px solid var(--gray-200); padding: 9px 24px; display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--gray-700); flex-wrap: wrap; }
+  .filter-bar label { font-weight: 600; }
+  .filter-bar input[type=date] { background: var(--panel); border: 1px solid var(--gray-200); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--gray-900); font-family: inherit; }
+  .filter-bar .clear { background: none; border: none; color: var(--wine); font-size: 11px; cursor: pointer; font-weight: 600; }
+  .filter-chip { background: var(--panel); border: 1px solid var(--gray-200); color: var(--gray-700); padding: 3px 9px; border-radius: 12px; font-size: 11px; cursor: pointer; font-weight: 500; transition: all .15s; }
+  .filter-chip:hover { border-color: var(--navy); color: var(--navy); }
+  .filter-chip.active { background: var(--navy); color: #FFFFFF; border-color: var(--navy); }
+  .filter-chip.stand-filter.active { background: var(--wine); border-color: var(--wine); }
+  .divider { width: 1px; height: 18px; background: var(--gray-200); margin: 0 4px; }
 
-  /* BREADCRUMB STICKY */
-  .breadcrumb { position: sticky; top: 47px; z-index: 18; background: var(--panel); border-bottom: 1px solid var(--gray-200); padding: 8px 24px; font-size: 12px; color: var(--gray-500); display: flex; gap: 14px; align-items: center; }
+  /* === BREADCRUMB === */
+  .breadcrumb { position: sticky; top: 47px; z-index: 18; background: var(--panel); border-bottom: 1px solid var(--gray-200); padding: 8px 24px; font-size: 12px; color: var(--gray-500); display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
   .breadcrumb strong { color: var(--navy); }
+  .breadcrumb .active-filters { display: inline-flex; gap: 6px; margin-left: auto; }
+  .breadcrumb .filter-tag { background: var(--wine); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .breadcrumb .filter-tag::after { content: ' ✕'; opacity: 0.6; }
 
-  /* LAYOUT com sidebar */
-  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 16px 24px; max-width: 1380px; margin: 0 auto; }
+  /* === LAYOUT === */
+  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
   .sidenav { position: sticky; top: 110px; align-self: flex-start; padding: 12px 0; max-height: calc(100vh - 130px); overflow-y: auto; }
-  .sidenav a { display: block; padding: 8px 14px; color: var(--gray-500); font-size: 12px; font-weight: 600; text-decoration: none; border-left: 3px solid transparent; transition: all .15s; letter-spacing: 0.3px; }
+  .sidenav a { display: block; padding: 7px 14px; color: var(--gray-500); font-size: 12px; font-weight: 600; text-decoration: none; border-left: 3px solid transparent; transition: all .15s; letter-spacing: 0.3px; }
   .sidenav a:hover { color: var(--navy); border-left-color: var(--gray-200); }
   .sidenav a.active { color: var(--navy); border-left-color: var(--wine); background: var(--gray-50); }
-
   main { min-width: 0; }
 
-  /* HERO STAT */
+  /* === HERO === */
   .hero { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .hero-main { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 22px; box-shadow: var(--shadow-md); position: relative; overflow: hidden; }
   .hero-main::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--wine); }
   .hero-main .label { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
-  .hero-main .value { font-size: 64px; font-weight: 800; color: var(--navy); line-height: 1; margin-top: 4px; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+  .hero-main .value { font-size: 64px; font-weight: 800; color: var(--navy); line-height: 1; margin-top: 4px; font-variant-numeric: tabular-nums; letter-spacing: -1px; transition: color .25s; }
   .hero-main .meta { font-size: 13px; color: var(--gray-500); margin-top: 6px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .hero-main .mom { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
   .hero-main .mom.up { background: rgba(4,120,87,0.10); color: var(--green); }
   .hero-main .mom.down { background: rgba(164,0,27,0.10); color: var(--wine); }
   .hero-main .sparkline-wrap { margin-top: 10px; }
-
-  .hero-side { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+  .hero-side { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+  .hero-side:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
   .hero-side::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
   .hero-side.first::before { background: var(--wine); }
   .hero-side.second::before { background: var(--navy-light); }
@@ -126,20 +145,32 @@
   .hero-side .visits { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-top: 4px; line-height: 1; }
   .hero-side .meta { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
 
-  /* SECTIONS - alternância de fundo sutil */
-  section { margin-bottom: 16px; scroll-margin-top: 110px; }
-  .panel { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  /* === GOAL TRACKING === */
+  .goal-bar { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 10px; padding: 12px 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .goal-bar .label { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; flex-shrink: 0; }
+  .goal-bar .progress { flex: 1; min-width: 200px; height: 14px; background: var(--gray-100); border-radius: 8px; overflow: hidden; position: relative; }
+  .goal-bar .fill { height: 100%; background: linear-gradient(90deg, var(--navy-light), var(--navy)); border-radius: 8px; transition: width .6s ease-out; }
+  .goal-bar .fill.over { background: linear-gradient(90deg, var(--green), #059669); }
+  .goal-bar .meta { font-size: 12px; color: var(--gray-700); }
+  .goal-bar .meta strong { color: var(--navy); }
+  .goal-bar input { background: var(--panel); border: 1px solid var(--gray-200); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--gray-900); width: 80px; }
+
+  /* === SECTIONS === */
+  section { margin-bottom: 16px; scroll-margin-top: 110px; animation: fadeIn .3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .panel { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow .15s; }
+  .panel:hover { box-shadow: var(--shadow-md); }
   .panel.alt { background: var(--panel-alt); }
   .panel h2 { margin: 0; padding: 11px 16px; font-size: 11px; font-weight: 700; color: var(--navy); border-bottom: 1px solid var(--gray-200); background: var(--gray-50); display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.6px; }
   .panel h2 .legend { font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--gray-500); }
   .panel-body { padding: 14px 16px; }
   .legend-pill { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; }
   .legend-pill .dot { width: 10px; height: 10px; border-radius: 2px; }
-
   .chart-wrapper { position: relative; height: 280px; }
   .chart-wrapper.tall { height: 320px; }
+  .chart-wrapper.short { height: 200px; }
 
-  /* INSIGHT/RESUMO */
+  /* === INSIGHT === */
   .insight { padding: 11px 16px; border-bottom: 1px solid var(--gray-200); display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--gray-700); }
   .insight:last-child { border-bottom: none; }
   .insight .ic { width: 18px; height: 18px; flex-shrink: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #FFFFFF; margin-top: 1px; }
@@ -149,9 +180,30 @@
   .insight.warn .ic { background: var(--amber); }
   .insight strong { color: var(--navy); }
 
-  /* PÓDIO */
+  /* === HEATMAP CALENDÁRIO === */
+  .heatmap { padding: 18px; }
+  .heatmap-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .month-block { flex: 1; min-width: 280px; }
+  .month-block h3 { margin: 0 0 8px; font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+  .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-head { font-size: 9px; color: var(--gray-400); text-align: center; font-weight: 600; padding: 2px; text-transform: uppercase; }
+  .cal-cell { aspect-ratio: 1; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; cursor: pointer; transition: transform .1s; position: relative; }
+  .cal-cell.empty { background: transparent; cursor: default; }
+  .cal-cell.lvl0 { background: var(--gray-100); color: var(--gray-400); }
+  .cal-cell.lvl1 { background: rgba(0,61,107,0.20); color: var(--navy); }
+  .cal-cell.lvl2 { background: rgba(0,61,107,0.40); color: #fff; }
+  .cal-cell.lvl3 { background: rgba(0,61,107,0.65); color: #fff; }
+  .cal-cell.lvl4 { background: var(--navy); color: #fff; }
+  .cal-cell.lvl5 { background: var(--wine); color: #fff; box-shadow: 0 0 0 2px rgba(164,0,27,0.3); }
+  .cal-cell:not(.empty):hover { transform: scale(1.15); z-index: 5; }
+  .heatmap-legend { margin-top: 12px; display: flex; gap: 6px; align-items: center; font-size: 10px; color: var(--gray-500); }
+  .heatmap-legend .swatch { width: 12px; height: 12px; border-radius: 2px; }
+
+  /* === PÓDIO === */
   .podium { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 14px; }
-  .pod { background: var(--panel-alt); border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px; position: relative; }
+  .pod { background: var(--panel-alt); border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px; position: relative; cursor: pointer; transition: all .15s; }
+  .pod:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .pod.filtered { box-shadow: 0 0 0 2px var(--wine); }
   .pod .pos { position: absolute; top: -8px; left: 10px; background: var(--navy); color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.5px; }
   .pod.gold { background: linear-gradient(135deg, rgba(164,0,27,0.06), var(--panel)); border-color: var(--wine); }
   .pod.gold .pos { background: var(--wine); }
@@ -164,26 +216,49 @@
   .pod.gold .stand-visits { color: var(--wine); }
   .pod .stand-meta { font-size: 10px; color: var(--gray-500); margin-top: 3px; }
   .pod .pct-bar { height: 3px; background: var(--gray-200); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-  .pod .pct-fill { height: 100%; background: var(--navy); }
+  .pod .pct-fill { height: 100%; background: var(--navy); transition: width .5s; }
   .pod.gold .pct-fill { background: var(--wine); }
   .pod .sparkline { margin-top: 6px; display: block; opacity: 0.85; width: 100%; height: 24px; }
 
-  /* GRIDS */
+  /* === COMPARAÇÃO 3 MESES === */
+  .month-compare { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px; }
+  .mc-card { background: var(--panel-alt); border: 1px solid var(--gray-200); border-radius: 8px; padding: 14px; }
+  .mc-card .month-name { font-size: 12px; color: var(--navy); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .mc-card .total { font-size: 32px; font-weight: 800; color: var(--gray-900); margin: 6px 0; line-height: 1; }
+  .mc-card .meta { font-size: 11px; color: var(--gray-500); }
+  .mc-card .top-stand { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--gray-200); font-size: 12px; color: var(--gray-700); }
+  .mc-card .top-stand strong { color: var(--wine); }
+
+  /* === GRIDS === */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* TABELAS */
+  /* === TOP LISTS === */
+  .top-list { padding: 4px 0; }
+  .top-row { padding: 8px 16px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .top-row:last-child { border-bottom: none; }
+  .top-row .rank { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .top-row .rank.r1 { background: var(--wine); }
+  .top-row .name { flex: 1; color: var(--gray-900); font-weight: 500; }
+  .top-row .count { font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+
+  /* === TABELAS === */
   table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--gray-200); }
   th { background: var(--gray-50); color: var(--gray-700); font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; }
   tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--gray-50); cursor: pointer; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   td.total { font-weight: 700; color: var(--navy); }
   tr.total-row td { background: var(--gray-50); font-weight: 700; color: var(--navy); }
+  tr.total-row:hover { background: var(--gray-50); cursor: default; }
   .rank-cell { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--navy); color: #FFFFFF; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; margin-right: 6px; }
   .rank-cell.r1 { background: var(--wine); }
   .stand-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 1px; }
+  .day-comment { font-size: 10px; color: var(--gray-400); margin-left: 8px; cursor: pointer; }
+  .day-comment.has-comment { color: var(--wine); }
 
-  /* COLAPSÁVEL */
+  /* === COLAPSÁVEL === */
   details.collapsible { background: var(--panel); border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
   details.collapsible > summary { list-style: none; cursor: pointer; padding: 11px 16px; font-size: 11px; font-weight: 700; color: var(--navy); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.6px; transition: background .15s; }
   details.collapsible > summary::-webkit-details-marker { display: none; }
@@ -192,25 +267,56 @@
   details.collapsible[open] > summary::before { transform: rotate(90deg); display: inline-block; }
   details.collapsible > summary .hint { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--gray-500); font-size: 11px; }
 
-  /* FOOTER */
+  /* === MODAL DRILL-DOWN === */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+  .modal-overlay.show { display: flex; animation: fadeIn .2s; }
+  .modal { background: var(--panel); border-radius: 10px; max-width: 700px; width: 100%; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); }
+  .modal-head { background: var(--navy); color: #fff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+  .modal-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
+  .modal-close { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; font-weight: 700; }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { padding: 18px; overflow-y: auto; }
+  .modal-body textarea { width: 100%; min-height: 60px; padding: 8px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 13px; background: var(--panel); color: var(--gray-900); }
+  .modal-body button { background: var(--navy); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+
+  /* === FOOTER === */
   footer { padding: 16px 24px; background: var(--panel-alt); border-top: 1px solid var(--gray-200); margin-top: 16px; font-size: 11px; color: var(--gray-500); display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
   .refresh-btn { background: var(--navy); color: #FFFFFF; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 6px; }
   .refresh-btn:hover { background: var(--navy-dark); }
   .refresh-btn:disabled { opacity: 0.5; cursor: wait; }
+  .footer-actions { display: flex; gap: 8px; }
 
-  /* RESPONSIVE */
+  /* === MODO APRESENTAÇÃO === */
+  body.presentation { font-size: 16px; }
+  body.presentation .header h1 { font-size: 22px; }
+  body.presentation .hero-main .value { font-size: 88px; }
+  body.presentation .sidenav, body.presentation .topbar-actions, body.presentation .filter-bar, body.presentation .breadcrumb, body.presentation footer { display: none; }
+  body.presentation .layout { grid-template-columns: 1fr; max-width: 100%; padding: 24px 36px; }
+  body.presentation section { margin-bottom: 24px; }
+  body.presentation .panel h2 { font-size: 14px; padding: 16px 20px; }
+  body.presentation .pod .stand-visits { font-size: 32px; }
+  body.presentation .chart-wrapper { height: 380px; }
+
+  /* === KEYBOARD HINT === */
+  .kbd-hint { position: fixed; bottom: 16px; right: 16px; background: var(--navy); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 50; opacity: 0.7; transition: opacity .15s; }
+  .kbd-hint:hover { opacity: 1; }
+  .kbd-hint kbd { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+
+  /* === RESPONSIVE === */
   @media (max-width: 1100px) {
     .layout { grid-template-columns: 1fr; padding: 12px; }
     .sidenav { display: none; }
     .hero { grid-template-columns: 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .podium { grid-template-columns: repeat(2, 1fr); }
+    .month-compare { grid-template-columns: 1fr; }
     .breadcrumb { font-size: 11px; }
+    .heatmap-grid { flex-direction: column; }
   }
 
-  /* PRINT */
+  /* === PRINT === */
   @media print {
-    .topbar-actions, .month-tabs, .breadcrumb, .range-filter, .sidenav, .refresh-btn { display: none !important; }
+    .topbar-actions, .month-tabs, .breadcrumb, .filter-bar, .sidenav, .refresh-btn, .pending-banner, .kbd-hint, .footer-actions { display: none !important; }
     .layout { grid-template-columns: 1fr; padding: 0; max-width: 100%; }
     .panel, .pod, .hero-main, .hero-side { box-shadow: none !important; border: 1px solid #ddd !important; page-break-inside: avoid; }
     section { page-break-inside: avoid; margin-bottom: 12px; }
@@ -222,6 +328,8 @@
 </style>
 </head>
 <body>
+  <div class="scroll-progress"><div class="bar" id="scroll-bar"></div></div>
+
   <div class="header">
     <div>
       <h1>EBM &middot; Painel de Visitas — Stands NOW</h1>
@@ -229,21 +337,35 @@
     </div>
     <div class="topbar-actions">
       <button class="icon-btn" id="btn-compare" title="Sobrepor mês anterior nos gráficos">↻ Comparar</button>
-      <button class="icon-btn" id="btn-theme" title="Alternar tema claro/escuro">🌙 Escuro</button>
-      <button class="icon-btn" id="btn-print" title="Imprimir / exportar PDF">🖨 Imprimir</button>
+      <button class="icon-btn" id="btn-present" title="Modo apresentação (P)">▶ Apresentação</button>
+      <button class="icon-btn" id="btn-lang" title="Alternar idioma" data-lang="pt">🌐 PT</button>
+      <button class="icon-btn" id="btn-theme" title="Alternar tema (M)">🌙 Escuro</button>
+      <button class="icon-btn" id="btn-print" title="Imprimir">🖨 Imprimir</button>
+      <button class="icon-btn" id="btn-help" title="Atalhos (?)">⌨ ?</button>
     </div>
   </div>
 
   <div class="status-bar" id="status-bar"></div>
 
+  <div class="pending-banner hidden" id="pending-banner">
+    <span class="ic">!</span>
+    <span id="pending-text"></span>
+  </div>
+
   <div class="month-tabs" id="month-tabs"></div>
 
-  <div class="range-filter">
+  <div class="filter-bar">
     <span style="display:flex;gap:6px;flex-wrap:wrap;">
-      <button class="quick" data-quick="m">Mês inteiro</button>
-      <button class="quick" data-quick="7">Últimos 7d</button>
-      <button class="quick" data-quick="14">Últimos 14d</button>
-      <button class="quick" data-quick="30">Últimos 30d</button>
+      <button class="filter-chip" data-quick="m">Mês inteiro</button>
+      <button class="filter-chip" data-quick="7">Últimos 7d</button>
+      <button class="filter-chip" data-quick="14">Últimos 14d</button>
+      <button class="filter-chip" data-quick="30">Últimos 30d</button>
+    </span>
+    <span class="divider"></span>
+    <span style="display:flex;gap:6px;flex-wrap:wrap;" id="reportador-filters">
+      <button class="filter-chip" data-rep="Rayanne">👤 Rayanne</button>
+      <button class="filter-chip" data-rep="Ramon">👤 Ramon</button>
+      <button class="filter-chip" data-rep="Renato">👤 Renato</button>
     </span>
     <span style="margin-left:auto;display:flex;gap:8px;align-items:center;">
       <label>De:</label>
@@ -259,11 +381,16 @@
   <div class="layout">
     <aside class="sidenav" id="sidenav">
       <a href="#hero">📊 Visão Geral</a>
+      <a href="#goal">🎯 Meta</a>
       <a href="#resumo">💡 Resumo</a>
+      <a href="#heatmap">📅 Calendário</a>
       <a href="#podium">🏆 Pódio</a>
-      <a href="#daily">📅 Diário</a>
-      <a href="#evolucao">📈 Evolução</a>
+      <a href="#compare">⚖ Comparação</a>
+      <a href="#daily">📈 Diário</a>
+      <a href="#evolucao">📉 Evolução</a>
       <a href="#analise">🔍 Análise</a>
+      <a href="#canais">📢 Canais</a>
+      <a href="#tops">⭐ Tops</a>
       <a href="#ranking">📋 Ranking</a>
       <a href="#detalhe">📝 Detalhamento</a>
     </aside>
@@ -272,22 +399,23 @@
       <section id="hero">
         <div class="hero">
           <div class="hero-main">
-            <div class="label">Total de visitas</div>
+            <div class="label" data-i18n="total_visitas">Total de visitas</div>
             <div class="value" id="hero-value">—</div>
             <div class="meta">
               <span id="hero-meta">—</span>
               <span id="hero-mom"></span>
+              <span id="hero-forecast" style="color:var(--navy-light);font-weight:600;"></span>
             </div>
             <div class="sparkline-wrap" id="hero-sparkline"></div>
           </div>
           <div class="hero-side first">
-            <div class="label">1º lugar</div>
+            <div class="label" data-i18n="primeiro_lugar">1º lugar</div>
             <div class="stand" id="hero-stand1">—</div>
             <div class="visits" id="hero-visits1">—</div>
             <div class="meta" id="hero-meta1">—</div>
           </div>
           <div class="hero-side second">
-            <div class="label">2º lugar</div>
+            <div class="label" data-i18n="segundo_lugar">2º lugar</div>
             <div class="stand" id="hero-stand2">—</div>
             <div class="visits" id="hero-visits2">—</div>
             <div class="meta" id="hero-meta2">—</div>
@@ -295,24 +423,57 @@
         </div>
       </section>
 
+      <section id="goal">
+        <div class="goal-bar">
+          <span class="label">🎯 Meta do mês</span>
+          <input type="number" id="goal-input" value="600" min="1" />
+          <div class="progress"><div class="fill" id="goal-fill"></div></div>
+          <span class="meta" id="goal-meta">—</span>
+        </div>
+      </section>
+
       <section id="resumo">
         <div class="panel">
-          <h2>Resumo automático</h2>
+          <h2 data-i18n="resumo_auto">Resumo automático</h2>
           <div id="summary-content"></div>
+        </div>
+      </section>
+
+      <section id="heatmap">
+        <div class="panel">
+          <h2 data-i18n="cal_heatmap">Calendário de visitas — heatmap por dia</h2>
+          <div class="heatmap" id="heatmap-content"></div>
+          <div class="heatmap-legend" style="padding: 0 18px 14px;">
+            <span>Menos</span>
+            <span class="swatch" style="background:var(--gray-100)"></span>
+            <span class="swatch" style="background:rgba(0,61,107,0.20)"></span>
+            <span class="swatch" style="background:rgba(0,61,107,0.40)"></span>
+            <span class="swatch" style="background:rgba(0,61,107,0.65)"></span>
+            <span class="swatch" style="background:var(--navy)"></span>
+            <span class="swatch" style="background:var(--wine)"></span>
+            <span>Mais (★ pico)</span>
+          </div>
         </div>
       </section>
 
       <section id="podium">
         <div class="panel">
-          <h2>Pódio dos Stands &mdash; ranking + tendência</h2>
+          <h2>Pódio dos Stands &mdash; <span style="font-weight:500;text-transform:none;letter-spacing:0;font-size:11px;color:var(--gray-500)">clique pra filtrar</span></h2>
           <div class="podium" id="podium-grid"></div>
+        </div>
+      </section>
+
+      <section id="compare">
+        <div class="panel">
+          <h2 data-i18n="comparacao_meses">Comparação Mar × Abr × Mai</h2>
+          <div class="month-compare" id="month-compare-grid"></div>
         </div>
       </section>
 
       <section id="daily">
         <div class="panel alt">
           <h2>
-            Visitas por dia <span class="legend">empilhado por reportador · ★ = evento · - - média</span>
+            Visitas por dia <span class="legend">empilhado por reportador · ★ = evento · - - média · ··· forecast</span>
           </h2>
           <div class="panel-body"><div class="chart-wrapper tall"><canvas id="chart-daily"></canvas></div></div>
         </div>
@@ -328,12 +489,32 @@
       <section id="analise">
         <div class="grid-2">
           <div class="panel alt">
-            <h2>Análise por dia da semana <span class="legend">média/dia</span></h2>
+            <h2>Dia da semana <span class="legend">média/dia</span></h2>
             <div class="panel-body"><div class="chart-wrapper"><canvas id="chart-dow"></canvas></div></div>
           </div>
           <div class="panel alt">
             <h2>Tipo de prospecção <span class="legend" id="prospec-period">—</span></h2>
             <div class="panel-body"><div class="chart-wrapper"><canvas id="chart-prospec"></canvas></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="canais">
+        <div class="panel">
+          <h2>Distribuição por canal de captação <span class="legend">Março 2026 · ranking</span></h2>
+          <div class="panel-body"><div class="chart-wrapper short"><canvas id="chart-canais"></canvas></div></div>
+        </div>
+      </section>
+
+      <section id="tops">
+        <div class="grid-2">
+          <div class="panel">
+            <h2>Top corretores</h2>
+            <div class="top-list" id="top-corretores"></div>
+          </div>
+          <div class="panel">
+            <h2>Top imobiliárias / gerentes</h2>
+            <div class="top-list" id="top-imobs"></div>
           </div>
         </div>
       </section>
@@ -356,8 +537,20 @@
 
   <footer>
     <span>Última coleta: <strong id="last-updated">08/05/2026 23:57</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
-    <span style="font-size:11px;color:var(--gray-500)">Atualizacao automatica diaria as 00:30</span>
+    <div class="footer-actions">
+      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
+      <span style="font-size:11px;color:var(--gray-500)">Auto-update diário às 00:30</span>
+    </div>
   </footer>
+
+  <div class="kbd-hint" id="kbd-hint" title="Atalhos">⌨ <kbd>?</kbd> ajuda</div>
+
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-head"><h3 id="modal-title">Detalhe</h3><button class="modal-close" id="modal-close" aria-label="Fechar">✕</button></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
 
 <script>
 const PALETTE = {
@@ -368,18 +561,8 @@ const PALETTE = {
 };
 
 const STANDS = ['NOW Laguna','NOW 111','Pitangueira','Pq. America','NOW BSB'];
-const STAND_COLORS = {
-  'NOW Laguna': '#003D6B',
-  'NOW 111':    '#5C7E9C',
-  'Pitangueira':'#1B5A8C',
-  'Pq. America':'#A0BAD0',
-  'NOW BSB':    '#A4001B'
-};
-const REPORTADOR_STANDS = {
-  Rayanne: ['NOW Laguna','NOW 111'],
-  Ramon:   ['Pitangueira','Pq. America'],
-  Renato:  ['NOW BSB']
-};
+const STAND_COLORS = { 'NOW Laguna':'#003D6B','NOW 111':'#5C7E9C','Pitangueira':'#1B5A8C','Pq. America':'#A0BAD0','NOW BSB':'#A4001B' };
+const REPORTADOR_STANDS = { Rayanne:['NOW Laguna','NOW 111'], Ramon:['Pitangueira','Pq. America'], Renato:['NOW BSB'] };
 
 // ===DATA-START=== auto-atualizado pela scheduled task dashboard-visitas-rebuild; nao edite entre os marcadores
 const allDays = [
@@ -471,37 +654,104 @@ const MONTHS = [
     ];
 // ===DATA-END===
 
-// ====== HELPERS ======
+// === DADOS ESTÁTICOS ADICIONAIS (canais, top corretores, imobiliárias) ===
+const CANAIS = [
+  { name:'House BEM', value:150 },
+  { name:'Class MAP', value:99 },
+  { name:'Agendado EBM/Kézia', value:90 },
+  { name:'Class BEM', value:49 },
+  { name:'Place+', value:40 },
+  { name:'Espontânea/Mercado', value:10 },
+  { name:'Outros', value:13 }
+];
+
+const TOP_CORRETORES = [
+  { name:'Carla Aquino', count:8 },
+  { name:'Heliane', count:6 },
+  { name:'Larissa', count:5 },
+  { name:'Marcia Diana', count:4 },
+  { name:'Kelly', count:4 },
+  { name:'José', count:4 },
+  { name:'Etiene', count:4 },
+  { name:'Ronaldo', count:3 },
+  { name:'Luciano', count:3 },
+  { name:'Caio', count:3 }
+];
+
+const TOP_IMOBS = [
+  { name:'House EBM - BEM', count:48 },
+  { name:'EBM / Kézia', count:42 },
+  { name:'Class MAP', count:31 },
+  { name:'Place+', count:24 },
+  { name:'EBM / Frank', count:18 },
+  { name:'EBM / Lene', count:14 },
+  { name:'House EBM - PLACE+', count:12 },
+  { name:'AEVO', count:10 },
+  { name:'Mybroker', count:8 },
+  { name:'IN HOUSE/LENE', count:6 }
+];
+
+// === I18N ===
+const I18N = {
+  pt: { total_visitas:'Total de visitas', primeiro_lugar:'1º lugar', segundo_lugar:'2º lugar', resumo_auto:'Resumo automático', cal_heatmap:'Calendário de visitas — heatmap por dia', comparacao_meses:'Comparação Mar × Abr × Mai' },
+  en: { total_visitas:'Total visits', primeiro_lugar:'1st place', segundo_lugar:'2nd place', resumo_auto:'Auto summary', cal_heatmap:'Visit calendar — daily heatmap', comparacao_meses:'Compare Mar × Apr × May' }
+};
+
+// === HELPERS ===
 const filterDays = (m) => m === 'total' ? allDays.slice() : allDays.filter(d => d.mes === m);
 const totalVisits = (days) => days.reduce((s, d) => s + d.v.reduce((a, b) => a + b, 0), 0);
 const standTotalsFor = (days) => { const t = STANDS.map(() => 0); days.forEach(d => d.v.forEach((n, i) => t[i] += n)); return t; };
-const reportadorTotalsFor = (days) => { const t = { Rayanne: 0, Ramon: 0, Renato: 0 }; days.forEach(d => { t.Rayanne += d.v[0]+d.v[1]; t.Ramon += d.v[2]+d.v[3]; t.Renato += d.v[4]; }); return t; };
+const reportadorTotalsFor = (days) => { const t = { Rayanne:0, Ramon:0, Renato:0 }; days.forEach(d => { t.Rayanne += d.v[0]+d.v[1]; t.Ramon += d.v[2]+d.v[3]; t.Renato += d.v[4]; }); return t; };
 const peakDay = (days) => { let best = null, bestSum = -1; days.forEach(d => { const s = d.v.reduce((a,b)=>a+b,0); if (s > bestSum) { bestSum = s; best = d; } }); return { day: best, total: bestSum }; };
 const reportadorOf = (stand) => Object.entries(REPORTADOR_STANDS).find(([_, ss]) => ss.includes(stand))[0];
-const parseDate = (dia) => { const [d, m] = dia.split('/').map(Number); return new Date(2026, m - 1, d); };
-const dateToISO = (date) => date.toISOString().slice(0, 10);
+const parseDate = (dia) => { const [d, m] = dia.split('/').map(Number); return new Date(2026, m-1, d); };
+const dateToISO = (date) => date.toISOString().slice(0,10);
 const isoToDia = (iso) => { const d = new Date(iso); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
 const dayOfWeek = (dia) => parseDate(dia).getDay();
 const DOW_NAMES = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-function sparklineSVG(values, color, w = 100, h = 28) {
+function sparklineSVG(values, color, w=100, h=28) {
   if (!values.length) return '';
   const max = Math.max(...values, 1);
-  const stepX = values.length > 1 ? w / (values.length - 1) : 0;
-  const points = values.map((v, i) => `${(i*stepX).toFixed(1)},${(h - (v/max)*h).toFixed(1)}`).join(' ');
-  const lx = ((values.length - 1) * stepX).toFixed(1);
-  const ly = (h - (values[values.length - 1]/max)*h).toFixed(1);
+  const stepX = values.length > 1 ? w/(values.length-1) : 0;
+  const points = values.map((v,i) => `${(i*stepX).toFixed(1)},${(h-(v/max)*h).toFixed(1)}`).join(' ');
+  const lx = ((values.length-1)*stepX).toFixed(1);
+  const ly = (h-(values[values.length-1]/max)*h).toFixed(1);
   return `<svg class="sparkline" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" points="${points}"/><circle cx="${lx}" cy="${ly}" r="2" fill="${color}"/></svg>`;
 }
 
-// ====== ESTADO ======
+// === ESTADO ===
 let currentMonth = 'abril';
 let rangeStart = null, rangeEnd = null;
 let compareMode = false;
+let standFilter = null;       // novo: filtro por stand (clicar pódio)
+let reportadorFilter = null;  // novo: filtro por reportador
+let goalValue = parseInt(localStorage.getItem('ebm-goal')||'600', 10);
+let lang = localStorage.getItem('ebm-lang') || 'pt';
 let charts = {};
 let evoChart = null;
 
-// ====== CHART.JS PLUGINS ======
+// === URL STATE ===
+function readUrlState() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('mes')) currentMonth = p.get('mes');
+  if (p.get('stand')) standFilter = p.get('stand');
+  if (p.get('rep')) reportadorFilter = p.get('rep');
+  if (p.get('start')) rangeStart = p.get('start');
+  if (p.get('end')) rangeEnd = p.get('end');
+}
+function writeUrlState() {
+  const p = new URLSearchParams();
+  if (currentMonth !== 'abril') p.set('mes', currentMonth);
+  if (standFilter) p.set('stand', standFilter);
+  if (reportadorFilter) p.set('rep', reportadorFilter);
+  if (rangeStart) p.set('start', rangeStart);
+  if (rangeEnd) p.set('end', rangeEnd);
+  const q = p.toString();
+  history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+}
+
+// === CHART.JS PLUGINS (events, mean, forecast) ===
 const eventAnnotationPlugin = {
   id: 'eventAnnotation',
   afterDatasetsDraw(chart, args, options) {
@@ -513,21 +763,15 @@ const eventAnnotationPlugin = {
       const xPos = x.getPixelForValue(e.dia);
       if (xPos == null || isNaN(xPos)) return;
       ctx.strokeStyle = PALETTE.wine;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
-      ctx.globalAlpha = 0.5;
+      ctx.lineWidth = 1; ctx.setLineDash([3,3]); ctx.globalAlpha = 0.5;
       ctx.beginPath(); ctx.moveTo(xPos, top); ctx.lineTo(xPos, bottom); ctx.stroke();
-      ctx.globalAlpha = 1;
-      ctx.setLineDash([]);
-      ctx.fillStyle = PALETTE.wine;
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('★', xPos, top + 10);
+      ctx.globalAlpha = 1; ctx.setLineDash([]);
+      ctx.fillStyle = PALETTE.wine; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('★', xPos, top+10);
     });
     ctx.restore();
   }
 };
-
 const meanLinePlugin = {
   id: 'meanLine',
   afterDatasetsDraw(chart, args, options) {
@@ -536,27 +780,37 @@ const meanLinePlugin = {
     const { ctx, chartArea: { left, right }, scales: { y } } = chart;
     const yPos = y.getPixelForValue(mean);
     ctx.save();
-    ctx.strokeStyle = PALETTE.gray500;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = PALETTE.gray500; ctx.lineWidth = 1; ctx.setLineDash([6,4]);
     ctx.beginPath(); ctx.moveTo(left, yPos); ctx.lineTo(right, yPos); ctx.stroke();
-    ctx.fillStyle = PALETTE.gray500;
-    ctx.font = 'bold 9px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(`média ${mean.toFixed(1)}`, right - 4, yPos - 4);
+    ctx.fillStyle = PALETTE.gray500; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(`média ${mean.toFixed(1)}`, right-4, yPos-4);
     ctx.restore();
   }
 };
-
 Chart.register(eventAnnotationPlugin, meanLinePlugin);
 
-// ====== TABS ======
+// === FORECAST (regressão linear simples) ===
+function forecastNextDays(days, n = 5) {
+  const totals = days.map(d => d.v.reduce((a,b)=>a+b,0));
+  if (totals.length < 3) return [];
+  const xs = totals.map((_,i)=>i);
+  const ys = totals;
+  const meanX = xs.reduce((a,b)=>a+b,0)/xs.length;
+  const meanY = ys.reduce((a,b)=>a+b,0)/ys.length;
+  const num = xs.reduce((s,x,i)=>s+(x-meanX)*(ys[i]-meanY),0);
+  const den = xs.reduce((s,x)=>s+(x-meanX)**2,0) || 1;
+  const slope = num/den;
+  const intercept = meanY - slope*meanX;
+  return Array.from({length: n}, (_,i) => Math.max(0, Math.round(intercept + slope*(xs.length+i))));
+}
+
+// === TABS ===
 function buildTabs() {
   const el = document.getElementById('month-tabs');
   el.innerHTML = MONTHS.map(m => {
     const days = filterDays(m.id);
     const tot = totalVisits(days);
-    return `<div class="mtab" data-id="${m.id}">${m.label}<span class="count">${tot}</span></div>`;
+    return `<div class="mtab" data-id="${m.id}" role="tab" aria-label="Tab ${m.label}">${m.label}<span class="count">${tot}</span></div>`;
   }).join('');
   el.querySelectorAll('.mtab').forEach(t => t.addEventListener('click', () => switchMonth(t.dataset.id)));
 }
@@ -566,19 +820,32 @@ function switchMonth(id) {
   rangeStart = null; rangeEnd = null;
   document.getElementById('range-start').value = '';
   document.getElementById('range-end').value = '';
-  document.querySelectorAll('.range-filter .quick').forEach(q => q.classList.remove('active'));
-  document.querySelectorAll('.range-filter .quick[data-quick="m"]').forEach(q => q.classList.add('active'));
+  document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q => q.classList.toggle('active', q.dataset.quick === 'm'));
   document.querySelectorAll('#month-tabs .mtab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+  writeUrlState();
   render();
 }
 
-// ====== RANGE FILTER ======
+// === FILTROS ===
 function getActiveDays() {
+  let days;
   if (rangeStart && rangeEnd) {
     const s = new Date(rangeStart), e = new Date(rangeEnd);
-    return allDays.filter(d => { const dt = parseDate(d.dia); return dt >= s && dt <= e; });
+    days = allDays.filter(d => { const dt = parseDate(d.dia); return dt >= s && dt <= e; });
+  } else {
+    days = filterDays(currentMonth);
   }
-  return filterDays(currentMonth);
+  // Aplicar filtro de reportador (zera stands de outros reportadores)
+  if (reportadorFilter) {
+    const stands = REPORTADOR_STANDS[reportadorFilter] || [];
+    days = days.map(d => ({...d, v: d.v.map((v,i) => stands.includes(STANDS[i]) ? v : 0)}));
+  }
+  // Aplicar filtro de stand (zera outros stands)
+  if (standFilter) {
+    const idx = STANDS.indexOf(standFilter);
+    days = days.map(d => ({...d, v: d.v.map((v,i) => i === idx ? v : 0)}));
+  }
+  return days;
 }
 
 function getActiveLabel() {
@@ -587,90 +854,215 @@ function getActiveLabel() {
 }
 
 function applyQuickRange(quick) {
-  document.querySelectorAll('.range-filter .quick').forEach(q => q.classList.remove('active'));
-  document.querySelector(`.range-filter .quick[data-quick="${quick}"]`).classList.add('active');
+  document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q => q.classList.toggle('active', q.dataset.quick === quick));
   if (quick === 'm') {
     rangeStart = null; rangeEnd = null;
     document.getElementById('range-start').value = '';
     document.getElementById('range-end').value = '';
   } else {
     const days = parseInt(quick, 10);
-    const lastDay = parseDate(allDays[allDays.length - 1].dia);
-    const start = new Date(lastDay); start.setDate(start.getDate() - (days - 1));
+    const lastDay = parseDate(allDays[allDays.length-1].dia);
+    const start = new Date(lastDay); start.setDate(start.getDate()-(days-1));
     rangeStart = dateToISO(start);
     rangeEnd = dateToISO(lastDay);
     document.getElementById('range-start').value = rangeStart;
     document.getElementById('range-end').value = rangeEnd;
   }
+  writeUrlState();
   render();
 }
 
-// ====== RESUMO AUTOMÁTICO ======
+function toggleStandFilter(stand) {
+  standFilter = (standFilter === stand) ? null : stand;
+  writeUrlState();
+  render();
+}
+
+function toggleReportadorFilter(rep) {
+  reportadorFilter = (reportadorFilter === rep) ? null : rep;
+  document.querySelectorAll('#reportador-filters .filter-chip').forEach(c => c.classList.toggle('active', c.dataset.rep === reportadorFilter));
+  writeUrlState();
+  render();
+}
+
+// === RESUMO AUTOMÁTICO ===
 function generateSummary(meta, days, total, standsRanked, repTotals, peak) {
   const insights = [];
-  if (total === 0) { insights.push({ type:'info', text:'Nenhum lançamento neste período.' }); return insights; }
-  const top1 = standsRanked[0], last = standsRanked[standsRanked.length - 1];
-  insights.push({ type:'info', text:`<strong>${top1.stand}</strong> lidera com <strong>${top1.total} visitas</strong> (${Math.round(top1.total/total*100)}% do total) — operação de ${reportadorOf(top1.stand)}.` });
-
-  if (meta.prev) {
+  if (total === 0) { insights.push({type:'info', text:'Nenhum lançamento neste período.'}); return insights; }
+  const top1 = standsRanked[0], last = standsRanked[standsRanked.length-1];
+  insights.push({type:'info', text:`<strong>${top1.stand}</strong> lidera com <strong>${top1.total} visitas</strong> (${Math.round(top1.total/total*100)}% do total) — operação de ${reportadorOf(top1.stand)}.`});
+  if (meta.prev && !rangeStart) {
     const prevDays = filterDays(meta.prev);
     const prevTotal = totalVisits(prevDays);
     const prevMeta = MONTHS.find(m => m.id === meta.prev);
     if (prevTotal > 0) {
-      const diff = total - prevTotal, pct = Math.round((diff / prevTotal) * 100);
-      const prevAvg = prevTotal / prevDays.length, curAvg = total / days.length;
-      const avgDiff = Math.round(((curAvg - prevAvg) / prevAvg) * 100);
-      insights.push({ type: diff >= 0 ? 'up' : 'down', text:`Total vs <strong>${prevMeta.label}</strong>: <strong>${diff >= 0 ? '+' : ''}${diff} visitas</strong> (${pct >= 0 ? '+' : ''}${pct}%). Média/dia: ${curAvg.toFixed(1)} (era ${prevAvg.toFixed(1)}, ${avgDiff >= 0 ? '+' : ''}${avgDiff}%).` });
+      const diff = total - prevTotal, pct = Math.round((diff/prevTotal)*100);
+      const prevAvg = prevTotal/prevDays.length, curAvg = total/days.length;
+      const avgDiff = Math.round(((curAvg-prevAvg)/prevAvg)*100);
+      insights.push({type: diff>=0?'up':'down', text:`Total vs <strong>${prevMeta.label}</strong>: <strong>${diff>=0?'+':''}${diff} visitas</strong> (${pct>=0?'+':''}${pct}%). Média/dia: ${curAvg.toFixed(1)} (era ${prevAvg.toFixed(1)}, ${avgDiff>=0?'+':''}${avgDiff}%).`});
     }
-    const prevStands = standTotalsFor(prevDays);
-    let bigUp = { diff: 0 }, bigDown = { diff: 0 };
-    STANDS.forEach((s, i) => {
-      const cur = standsRanked.find(r => r.stand === s).total, prv = prevStands[i], d = cur - prv;
-      if (d > bigUp.diff) bigUp = { stand: s, diff: d, prv, cur };
-      if (d < bigDown.diff) bigDown = { stand: s, diff: d, prv, cur };
-    });
-    if (bigUp.stand) insights.push({ type:'up', text:`<strong>${bigUp.stand}</strong> teve o maior salto: ${bigUp.prv} → ${bigUp.cur} (<strong>+${bigUp.diff}</strong>).` });
-    if (bigDown.stand) insights.push({ type:'down', text:`<strong>${bigDown.stand}</strong> teve a maior queda: ${bigDown.prv} → ${bigDown.cur} (<strong>${bigDown.diff}</strong>).` });
   }
   if (peak.day) {
     const ev = EVENTS.find(e => e.dia === peak.day.dia);
-    insights.push({ type:'info', text:`Maior dia: <strong>${peak.day.dia}</strong> com <strong>${peak.total} visitas</strong>${ev ? ' — ' + ev.desc : ''}.` });
+    insights.push({type:'info', text:`Maior dia: <strong>${peak.day.dia}</strong> com <strong>${peak.total} visitas</strong>${ev ? ' — ' + ev.desc : ''}.`});
   }
-  if (last.total === 0) insights.push({ type:'warn', text:`<strong>${last.stand}</strong> não teve visita no período.` });
-  else if (last.total < total * 0.05) insights.push({ type:'warn', text:`<strong>${last.stand}</strong> abaixo dos demais: ${last.total} visitas (${Math.round(last.total/total*100)}%).` });
+  if (last.total === 0) insights.push({type:'warn', text:`<strong>${last.stand}</strong> não teve visita no período.`});
   return insights;
 }
 
-// ====== STATUS BAR ======
+// === STATUS BAR ===
 function renderStatusBar() {
   const el = document.getElementById('status-bar');
-  const todayKey = '02/05'; // último dia com dado real
-  const today = allDays.find(d => d.dia === todayKey);
-  const yesterdayKey = '01/05';
-  const yesterday = allDays.find(d => d.dia === yesterdayKey);
-  const todayTotal = today ? today.v.reduce((a,b)=>a+b,0) : 0;
-  const yesterdayTotal = yesterday ? yesterday.v.reduce((a,b)=>a+b,0) : 0;
-  const diff = todayTotal - yesterdayTotal;
-  const pct = yesterdayTotal > 0 ? Math.round((diff/yesterdayTotal)*100) : 0;
+  const lastEntry = allDays[allDays.length-1];
+  const prevEntry = allDays[allDays.length-2];
+  const todayTotal = lastEntry ? lastEntry.v.reduce((a,b)=>a+b,0) : 0;
+  const prevTotal = prevEntry ? prevEntry.v.reduce((a,b)=>a+b,0) : 0;
+  const diff = todayTotal-prevTotal;
+  const pct = prevTotal>0 ? Math.round((diff/prevTotal)*100) : 0;
   const monthTotal = totalVisits(filterDays('maio'));
   const totalGeral = totalVisits(allDays);
   el.innerHTML = `
-    <span class="status-item">Último dia (${todayKey}): <strong>${todayTotal}</strong> visitas</span>
-    <span class="status-item">vs anterior: ${diff >= 0 ? '+' : ''}${diff} <span class="pill ${diff >= 0 ? 'up' : 'down'}">${pct >= 0 ? '+' : ''}${pct}%</span></span>
-    <span class="status-item">Maio até agora: <strong>${monthTotal}</strong></span>
+    <span class="status-item">Último dia (${lastEntry?lastEntry.dia:'—'}): <strong>${todayTotal}</strong></span>
+    <span class="status-item">vs anterior: ${diff>=0?'+':''}${diff} <span class="pill ${diff>=0?'up':'down'}">${pct>=0?'+':''}${pct}%</span></span>
+    <span class="status-item">Maio: <strong>${monthTotal}</strong></span>
     <span class="status-item">Total acumulado: <strong>${totalGeral}</strong></span>
   `;
 }
 
-// ====== BREADCRUMB ======
+// === PENDÊNCIAS ===
+function renderPendingBanner() {
+  const banner = document.getElementById('pending-banner');
+  const text = document.getElementById('pending-text');
+  const lastDate = parseDate(allDays[allDays.length-1].dia);
+  const pendings = [];
+  Object.entries(REPORTADOR_STANDS).forEach(([rep, stands]) => {
+    let lastVisit = null;
+    for (let i = allDays.length-1; i >= 0; i--) {
+      const total = stands.reduce((s,st) => s + allDays[i].v[STANDS.indexOf(st)], 0);
+      if (total > 0) { lastVisit = allDays[i]; break; }
+    }
+    if (lastVisit) {
+      const gap = Math.round((lastDate - parseDate(lastVisit.dia))/86400000);
+      if (gap >= 2) pendings.push(`<strong>${rep}</strong> sem reporte há ${gap} dias`);
+    }
+  });
+  if (pendings.length === 0) { banner.classList.add('hidden'); return; }
+  text.innerHTML = `<strong>Pendências:</strong> ${pendings.join(' · ')}`;
+  banner.classList.remove('hidden');
+}
+
+// === BREADCRUMB ===
 function renderBreadcrumb() {
   const el = document.getElementById('breadcrumb');
   const meta = MONTHS.find(m => m.id === currentMonth);
-  const label = rangeStart && rangeEnd ? `Range custom: ${isoToDia(rangeStart)} a ${isoToDia(rangeEnd)}` : meta.label;
-  el.innerHTML = `📍 Você está vendo: <strong>${label}</strong> &middot; <span style="color:var(--gray-400)">use as tabs ou o filtro de data acima pra navegar</span>`;
+  const label = rangeStart && rangeEnd ? `Range: ${isoToDia(rangeStart)} a ${isoToDia(rangeEnd)}` : meta.label;
+  let html = `📍 Vendo: <strong>${label}</strong>`;
+  const tags = [];
+  if (reportadorFilter) tags.push(`<span class="filter-tag" onclick="toggleReportadorFilter('${reportadorFilter}')">👤 ${reportadorFilter}</span>`);
+  if (standFilter) tags.push(`<span class="filter-tag" onclick="toggleStandFilter('${standFilter}')">🏪 ${standFilter}</span>`);
+  if (tags.length) html += `<span class="active-filters">filtros: ${tags.join(' ')}</span>`;
+  el.innerHTML = html;
 }
 
-// ====== RENDER ======
+// === HEATMAP CALENDÁRIO ===
+function renderHeatmap() {
+  const el = document.getElementById('heatmap-content');
+  const monthsToShow = ['marco','abril','maio'];
+  const peak = peakDay(allDays).total;
+  const thresholds = [peak*0.05, peak*0.15, peak*0.30, peak*0.50, peak*0.75];
+  const lvl = (v) => v === 0 ? 0 : v < thresholds[0] ? 1 : v < thresholds[1] ? 2 : v < thresholds[2] ? 3 : v < thresholds[3] ? 4 : 5;
+  el.innerHTML = `<div class="heatmap-grid">${monthsToShow.map(mid => {
+    const m = MONTHS.find(x => x.id === mid);
+    const days = filterDays(mid);
+    const dayMap = {}; days.forEach(d => { dayMap[parseDate(d.dia).getDate()] = d.v.reduce((a,b)=>a+b,0); });
+    const monthIdx = mid === 'marco' ? 2 : mid === 'abril' ? 3 : 4;
+    const firstDay = new Date(2026, monthIdx, 1);
+    const startDow = firstDay.getDay();
+    const daysInMonth = new Date(2026, monthIdx+1, 0).getDate();
+    const cells = [];
+    DOW_NAMES.forEach(d => cells.push(`<div class="cal-head">${d[0]}</div>`));
+    for (let i=0;i<startDow;i++) cells.push('<div class="cal-cell empty"></div>');
+    for (let d=1;d<=daysInMonth;d++) {
+      const v = dayMap[d] || 0;
+      const cls = v === 0 && !dayMap[d] ? 'lvl0' : 'lvl'+lvl(v);
+      const dia = `${String(d).padStart(2,'0')}/${String(monthIdx+1).padStart(2,'0')}`;
+      cells.push(`<div class="cal-cell ${cls}" title="${dia}: ${v} visitas" onclick="openDrillDown('${dia}')">${d}</div>`);
+    }
+    return `<div class="month-block"><h3>${m.label}</h3><div class="calendar">${cells.join('')}</div></div>`;
+  }).join('')}</div>`;
+}
+
+// === COMPARAÇÃO 3 MESES ===
+function renderMonthCompare() {
+  const el = document.getElementById('month-compare-grid');
+  el.innerHTML = ['marco','abril','maio'].map(mid => {
+    const m = MONTHS.find(x => x.id === mid);
+    const days = filterDays(mid);
+    const total = totalVisits(days);
+    const standTotals = standTotalsFor(days);
+    const ranked = STANDS.map((s,i)=>({stand:s,total:standTotals[i]})).sort((a,b)=>b.total-a.total);
+    const top = ranked[0];
+    const avg = days.length ? (total/days.length).toFixed(1) : '0';
+    return `<div class="mc-card">
+      <div class="month-name">${m.label}</div>
+      <div class="total">${total}</div>
+      <div class="meta">${days.length} dias · ${avg}/dia</div>
+      <div class="top-stand">🏆 <strong>${top.stand}</strong> (${top.total} visitas, ${total>0?Math.round(top.total/total*100):0}%)</div>
+    </div>`;
+  }).join('');
+}
+
+// === DRILL-DOWN MODAL ===
+function openDrillDown(dia) {
+  const day = allDays.find(d => d.dia === dia);
+  if (!day) return;
+  document.getElementById('modal-title').textContent = `${dia} (${DOW_NAMES[dayOfWeek(dia)]})`;
+  const total = day.v.reduce((a,b)=>a+b,0);
+  const ev = EVENTS.find(e => e.dia === dia);
+  const comments = JSON.parse(localStorage.getItem('ebm-comments')||'{}');
+  document.getElementById('modal-body').innerHTML = `
+    <div style="font-size:32px;font-weight:800;color:var(--navy);margin-bottom:8px;">${total} visitas</div>
+    ${ev ? `<div style="background:rgba(164,0,27,0.08);padding:8px 12px;border-radius:6px;margin-bottom:12px;color:var(--wine);font-weight:600;">★ ${ev.desc}</div>` : ''}
+    <table style="margin-bottom:14px;"><thead><tr><th>Stand</th><th class="num">Visitas</th></tr></thead><tbody>
+      ${STANDS.map((s,i) => `<tr><td><span class="stand-dot" style="background:${STAND_COLORS[s]}"></span>${s}</td><td class="num"><strong>${day.v[i]}</strong></td></tr>`).join('')}
+      <tr class="total-row"><td>TOTAL</td><td class="num">${total}</td></tr>
+    </tbody></table>
+    <h4 style="margin:12px 0 6px;font-size:11px;text-transform:uppercase;color:var(--navy);">📝 Anotação (salva localmente)</h4>
+    <textarea id="day-comment-input" placeholder="Adicione uma nota sobre este dia (ex: campanha X, evento Y...)">${comments[dia]||''}</textarea>
+    <button onclick="saveDayComment('${dia}')">💾 Salvar nota</button>
+  `;
+  document.getElementById('modal').classList.add('show');
+}
+
+function saveDayComment(dia) {
+  const text = document.getElementById('day-comment-input').value.trim();
+  const comments = JSON.parse(localStorage.getItem('ebm-comments')||'{}');
+  if (text) comments[dia] = text;
+  else delete comments[dia];
+  localStorage.setItem('ebm-comments', JSON.stringify(comments));
+  document.getElementById('modal').classList.remove('show');
+  render();
+}
+
+// === EXPORT CSV ===
+function exportCSV() {
+  let csv = 'Data,Reportador,Stand,Visitas
+';
+  allDays.forEach(d => {
+    STANDS.forEach((s,i) => {
+      if (d.v[i] > 0) csv += `${d.dia},${reportadorOf(s)},${s},${d.v[i]}
+`;
+    });
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ebm-visitas-stands.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// === RENDER PRINCIPAL ===
 function render() {
   const meta = MONTHS.find(m => m.id === currentMonth);
   const days = getActiveDays();
@@ -678,175 +1070,179 @@ function render() {
   const standTotals = standTotalsFor(days);
   const repTotals = reportadorTotalsFor(days);
   const peak = peakDay(days);
-  const standsRanked = STANDS.map((s, i) => ({ stand: s, total: standTotals[i] })).sort((a, b) => b.total - a.total);
+  const standsRanked = STANDS.map((s,i)=>({stand:s, total:standTotals[i]})).sort((a,b)=>b.total-a.total);
 
   document.getElementById('hdr-periodo').innerHTML = `<strong>${meta.label}</strong> · ${getActiveLabel()} · ${days.length} dias`;
   renderBreadcrumb();
   document.getElementById('prospec-period').textContent = `agregado ${PROSPECCAO_PERIODO}`;
 
-  // ====== HERO ======
+  // HERO
   document.getElementById('hero-value').textContent = total;
-  document.getElementById('hero-meta').textContent = `${days.length} dias · média ${days.length ? (total/days.length).toFixed(1) : '0'}/dia`;
+  document.getElementById('hero-meta').textContent = `${days.length} dias · média ${days.length?(total/days.length).toFixed(1):'0'}/dia`;
   const momEl = document.getElementById('hero-mom');
   if (meta.prev && !rangeStart) {
-    const prevDays = filterDays(meta.prev);
-    const prevTotal = totalVisits(prevDays);
+    const prevTotal = totalVisits(filterDays(meta.prev));
     if (prevTotal > 0) {
-      const diff = total - prevTotal, pct = Math.round((diff / prevTotal) * 100);
-      momEl.innerHTML = `<span class="mom ${diff >= 0 ? 'up' : 'down'}">${diff >= 0 ? '▲' : '▼'} ${pct >= 0 ? '+' : ''}${pct}% vs mês anterior</span>`;
+      const diff = total-prevTotal, pct = Math.round((diff/prevTotal)*100);
+      momEl.innerHTML = `<span class="mom ${diff>=0?'up':'down'}">${diff>=0?'▲':'▼'} ${pct>=0?'+':''}${pct}% MoM</span>`;
     } else momEl.innerHTML = '';
   } else momEl.innerHTML = '';
-  // Sparkline hero (linha simples dos últimos N dias do período)
-  const sparkValues = days.map(d => d.v.reduce((a,b)=>a+b,0));
-  document.getElementById('hero-sparkline').innerHTML = sparklineSVG(sparkValues, PALETTE.navy, 320, 36);
+
+  // FORECAST
+  if (currentMonth !== 'total' && days.length >= 5) {
+    const forecast = forecastNextDays(days, 5);
+    const projected = forecast.reduce((a,b)=>a+b, 0);
+    document.getElementById('hero-forecast').textContent = `📈 forecast +${projected} próx. 5 dias (~${total + projected} mês)`;
+  } else { document.getElementById('hero-forecast').textContent = ''; }
+
+  document.getElementById('hero-sparkline').innerHTML = sparklineSVG(days.map(d=>d.v.reduce((a,b)=>a+b,0)), PALETTE.navy, 320, 36);
 
   const top1 = standsRanked[0], top2 = standsRanked[1];
-  document.getElementById('hero-stand1').textContent = top1 ? top1.stand : '—';
-  document.getElementById('hero-visits1').textContent = top1 ? top1.total : '—';
-  document.getElementById('hero-meta1').textContent = top1 && total > 0 ? `${Math.round(top1.total/total*100)}% · ${reportadorOf(top1.stand)}` : '—';
-  document.getElementById('hero-stand2').textContent = top2 ? top2.stand : '—';
-  document.getElementById('hero-visits2').textContent = top2 ? top2.total : '—';
-  document.getElementById('hero-meta2').textContent = top2 && total > 0 ? `${Math.round(top2.total/total*100)}% · ${reportadorOf(top2.stand)}` : '—';
+  document.getElementById('hero-stand1').textContent = top1?top1.stand:'—';
+  document.getElementById('hero-visits1').textContent = top1?top1.total:'—';
+  document.getElementById('hero-meta1').textContent = top1 && total>0 ? `${Math.round(top1.total/total*100)}% · ${reportadorOf(top1.stand)}` : '—';
+  document.getElementById('hero-stand2').textContent = top2?top2.stand:'—';
+  document.getElementById('hero-visits2').textContent = top2?top2.total:'—';
+  document.getElementById('hero-meta2').textContent = top2 && total>0 ? `${Math.round(top2.total/total*100)}% · ${reportadorOf(top2.stand)}` : '—';
 
-  // ====== RESUMO ======
+  // GOAL
+  const goal = goalValue;
+  const pct = Math.min(100, Math.round(total/goal*100));
+  document.getElementById('goal-fill').style.width = pct+'%';
+  document.getElementById('goal-fill').classList.toggle('over', total >= goal);
+  const remaining = Math.max(0, goal-total);
+  document.getElementById('goal-meta').innerHTML = `<strong>${total}</strong> de ${goal} visitas (${pct}%) · ${total>=goal ? '🎉 META BATIDA' : `faltam ${remaining}`}`;
+
+  // RESUMO
   const insights = generateSummary(meta, days, total, standsRanked, repTotals, peak);
   document.getElementById('summary-content').innerHTML = insights.map(ins =>
-    `<div class="insight ${ins.type}"><span class="ic">${ins.type === 'up' ? '↑' : ins.type === 'down' ? '↓' : ins.type === 'warn' ? '!' : 'i'}</span><span>${ins.text}</span></div>`
+    `<div class="insight ${ins.type}"><span class="ic">${ins.type==='up'?'↑':ins.type==='down'?'↓':ins.type==='warn'?'!':'i'}</span><span>${ins.text}</span></div>`
   ).join('');
 
-  // ====== PÓDIO ======
+  // PÓDIO
   const podiumEl = document.getElementById('podium-grid');
   const maxV = standsRanked[0].total || 1;
   const positionLabels = ['1º','2º','3º','4º','5º'];
   const podiumClass = ['gold','silver','bronze','',''];
-  podiumEl.innerHTML = standsRanked.map((s, i) => {
+  podiumEl.innerHTML = standsRanked.map((s,i) => {
     const idx = STANDS.indexOf(s.stand);
     const sparkValues = days.map(d => d.v[idx]);
     const color = STAND_COLORS[s.stand];
-    return `<div class="pod ${podiumClass[i]}"><span class="pos">${positionLabels[i]}</span><div class="stand-badge"><span class="dot" style="background:${color}"></span><span class="stand-name">${s.stand}</span></div><div class="stand-visits">${s.total}</div><div class="stand-meta">${total > 0 ? Math.round(s.total/total*100) : 0}% · ${reportadorOf(s.stand)}</div><div class="pct-bar"><div class="pct-fill" style="width:${(s.total/maxV*100).toFixed(0)}%"></div></div>${sparklineSVG(sparkValues, color, 100, 24)}</div>`;
+    const filtered = standFilter === s.stand ? 'filtered' : '';
+    return `<div class="pod ${podiumClass[i]} ${filtered}" onclick="toggleStandFilter('${s.stand}')" role="button" aria-label="Filtrar por ${s.stand}"><span class="pos">${positionLabels[i]}</span><div class="stand-badge"><span class="dot" style="background:${color}"></span><span class="stand-name">${s.stand}</span></div><div class="stand-visits">${s.total}</div><div class="stand-meta">${total>0?Math.round(s.total/total*100):0}% · ${reportadorOf(s.stand)}</div><div class="pct-bar"><div class="pct-fill" style="width:${(s.total/maxV*100).toFixed(0)}%"></div></div>${sparklineSVG(sparkValues, color, 100, 24)}</div>`;
   }).join('');
 
-  // ====== CHARTS ======
+  // CHARTS
   Object.values(charts).forEach(c => c && c.destroy());
   charts = {};
 
-  // Daily stacked + eventos + média + comparação
   const visibleEvents = EVENTS.filter(e => days.find(d => d.dia === e.dia));
-  const meanDaily = days.length ? total / days.length : 0;
+  const meanDaily = days.length ? total/days.length : 0;
+  const fcRaw = (currentMonth !== 'total' && days.length >= 5) ? forecastNextDays(days, 3) : [];
   const dailyDatasets = [
-    { label: 'Rayanne', data: days.map(d => d.v[0] + d.v[1]), backgroundColor: PALETTE.navy,      stack: 's' },
-    { label: 'Ramon',   data: days.map(d => d.v[2] + d.v[3]), backgroundColor: PALETTE.navyLight, stack: 's' },
-    { label: 'Renato',  data: days.map(d => d.v[4]),          backgroundColor: PALETTE.wine,      stack: 's', borderRadius: 3 }
+    { label:'Rayanne', data: days.map(d=>d.v[0]+d.v[1]), backgroundColor: PALETTE.navy, stack:'s' },
+    { label:'Ramon', data: days.map(d=>d.v[2]+d.v[3]), backgroundColor: PALETTE.navyLight, stack:'s' },
+    { label:'Renato', data: days.map(d=>d.v[4]), backgroundColor: PALETTE.wine, stack:'s', borderRadius:3 }
   ];
-  // Compare mode: adiciona linha do mês anterior alinhada por dia-do-mês
   if (compareMode && meta.prev && !rangeStart) {
     const prevDays = filterDays(meta.prev);
     const prevByDay = {};
     prevDays.forEach(d => { prevByDay[d.dia.split('/')[0]] = d.v.reduce((a,b)=>a+b,0); });
-    const prevAligned = days.map(d => prevByDay[d.dia.split('/')[0]] || 0);
-    dailyDatasets.push({
-      label: `${MONTHS.find(m => m.id === meta.prev).label} (mesmo dia)`,
-      data: prevAligned, type: 'line', borderColor: PALETTE.amber, borderDash: [4, 3],
-      borderWidth: 2, pointRadius: 2, fill: false, tension: 0.2, stack: 'comp'
-    });
+    const prevAligned = days.map(d => prevByDay[d.dia.split('/')[0]]||0);
+    dailyDatasets.push({ label: `${MONTHS.find(m=>m.id===meta.prev).label}`, data: prevAligned, type:'line', borderColor: PALETTE.amber, borderDash:[4,3], borderWidth:2, pointRadius:2, fill:false, tension:0.2, stack:'comp' });
   }
+  // Forecast line dataset
+  if (fcRaw.length) {
+    const allLabels = days.map(d => d.dia).concat(fcRaw.map((_,i)=>`+${i+1}d`));
+    const totals = days.map(d => d.v.reduce((a,b)=>a+b,0));
+    const fcData = totals.concat(fcRaw);
+    dailyDatasets.push({ label: 'Forecast', data: fcData.map((v,i) => i < totals.length ? null : v), type:'line', borderColor: PALETTE.navyLight, borderDash:[2,3], borderWidth:1.5, pointRadius:0, fill:false, tension:0.1, stack:'fc' });
+    var labelsForChart = allLabels;
+  } else { var labelsForChart = days.map(d => d.dia); }
+
   charts.daily = new Chart(document.getElementById('chart-daily'), {
-    type: 'bar',
-    data: { labels: days.map(d => d.dia), datasets: dailyDatasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        eventAnnotation: { events: visibleEvents },
-        meanLine: { mean: meanDaily },
-        tooltip: {
-          backgroundColor: PALETTE.navy, mode: 'index', intersect: false,
-          callbacks: {
-            title: (items) => {
-              const d = items[0].label, dow = DOW_NAMES[dayOfWeek(d)];
-              const ev = EVENTS.find(e => e.dia === d);
-              return `${d} (${dow})` + (ev ? ' ★ ' + ev.desc : '');
-            },
-            footer: (items) => 'Total: ' + items.filter(i => i.dataset.stack === 's').reduce((s, i) => s + i.parsed.y, 0)
+    type:'bar',
+    data:{ labels: labelsForChart, datasets: dailyDatasets },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, eventAnnotation:{events:visibleEvents}, meanLine:{mean:meanDaily},
+        tooltip:{ backgroundColor: PALETTE.navy, mode:'index', intersect:false,
+          callbacks:{
+            title: (items) => { const d = items[0].label; if (d.startsWith('+')) return `Forecast ${d}`; const dow = DOW_NAMES[dayOfWeek(d)]; const ev = EVENTS.find(e=>e.dia===d); return `${d} (${dow})${ev?' ★ '+ev.desc:''}`; },
+            footer: (items) => { const tot = items.filter(i => i.dataset.stack === 's').reduce((s,i) => s+i.parsed.y, 0); return tot>0 ? `Total: ${tot} (${total>0?Math.round(tot/total*100):0}% do mês)` : ''; }
           }
         }
       },
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: { stacked: true, ticks: { color: PALETTE.gray500, font: { size: 10 }, maxRotation: 45, minRotation: 45 }, grid: { display: false } },
-        y: { stacked: true, beginAtZero: true, ticks: { color: PALETTE.gray500, font: { size: 11 } }, grid: { color: PALETTE.gray200 } }
-      }
+      onClick: (e, els) => { if (els.length) { const idx = els[0].index; const lbl = labelsForChart[idx]; if (!lbl.startsWith('+')) openDrillDown(lbl); } },
+      interaction:{mode:'index', intersect:false},
+      scales:{ x:{stacked:true, ticks:{color:PALETTE.gray500, font:{size:10}, maxRotation:45, minRotation:45}, grid:{display:false}}, y:{stacked:true, beginAtZero:true, ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{color:PALETTE.gray200}} }
     }
   });
 
-  // Day of Week
+  // DOW
   const dowSums = [0,0,0,0,0,0,0]; const dowCount = [0,0,0,0,0,0,0];
   days.forEach(d => { const dow = dayOfWeek(d.dia); dowSums[dow] += d.v.reduce((a,b)=>a+b,0); dowCount[dow]++; });
   const dowAvg = dowSums.map((s,i) => dowCount[i] ? s/dowCount[i] : 0);
   const dowMax = Math.max(...dowAvg, 1);
   const orderedIdx = [1,2,3,4,5,6,0];
   charts.dow = new Chart(document.getElementById('chart-dow'), {
-    type: 'bar',
-    data: {
-      labels: orderedIdx.map(i => DOW_NAMES[i]),
-      datasets: [{
-        data: orderedIdx.map(i => Number(dowAvg[i].toFixed(1))),
-        backgroundColor: orderedIdx.map(i => dowAvg[i] === dowMax ? PALETTE.wine : PALETTE.navy),
-        borderRadius: 4
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: PALETTE.navy, callbacks: { label: (ctx) => `${ctx.parsed.y.toFixed(1)} visitas/dia (${dowCount[orderedIdx[ctx.dataIndex]]} dia${dowCount[orderedIdx[ctx.dataIndex]] === 1 ? '' : 's'})` } } },
-      scales: {
-        x: { ticks: { color: PALETTE.gray500, font: { size: 11 } }, grid: { display: false } },
-        y: { beginAtZero: true, ticks: { color: PALETTE.gray500, font: { size: 11 } }, grid: { color: PALETTE.gray200 } }
-      }
+    type:'bar', data:{ labels: orderedIdx.map(i=>DOW_NAMES[i]), datasets:[{ data: orderedIdx.map(i=>Number(dowAvg[i].toFixed(1))), backgroundColor: orderedIdx.map(i => dowAvg[i]===dowMax?PALETTE.wine:PALETTE.navy), borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{backgroundColor:PALETTE.navy, callbacks:{ label:(ctx)=>`${ctx.parsed.y.toFixed(1)} visitas/dia (${dowCount[orderedIdx[ctx.dataIndex]]} dia${dowCount[orderedIdx[ctx.dataIndex]]===1?'':'s'})` }} },
+      scales:{ x:{ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{color:PALETTE.gray200}} }
     }
   });
 
   // Prospecção
-  const prospTotal = PROSPECCAO.reduce((s,d) => s+d.value, 0);
+  const prospTotal = PROSPECCAO.reduce((s,d)=>s+d.value,0);
   charts.prospec = new Chart(document.getElementById('chart-prospec'), {
-    type: 'doughnut',
-    data: {
-      labels: PROSPECCAO.map(p => p.name),
-      datasets: [{ data: PROSPECCAO.map(p => p.value), backgroundColor: [PALETTE.navy, PALETTE.wine, PALETTE.navyLight, PALETTE.navySoft], borderWidth: 2, borderColor: PALETTE.white }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '55%',
-      plugins: {
-        legend: { position: 'right', labels: { color: PALETTE.gray500, font: { size: 12 }, padding: 10, boxWidth: 14 } },
-        tooltip: { backgroundColor: PALETTE.navy, callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/prospTotal*100)}%)` } }
-      }
+    type:'doughnut', data:{ labels: PROSPECCAO.map(p=>p.name), datasets:[{ data: PROSPECCAO.map(p=>p.value), backgroundColor:[PALETTE.navy, PALETTE.wine, PALETTE.navyLight, PALETTE.navySoft], borderWidth:2, borderColor: PALETTE.white }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'55%',
+      plugins:{ legend:{position:'right', labels:{color:PALETTE.gray500, font:{size:12}, padding:10, boxWidth:14}}, tooltip:{backgroundColor:PALETTE.navy, callbacks:{ label: ctx => `${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/prospTotal*100)}%)` }} }
     }
   });
 
-  // ====== TABELAS ======
+  // CANAIS
+  const canaisTotal = CANAIS.reduce((s,c)=>s+c.value,0);
+  charts.canais = new Chart(document.getElementById('chart-canais'), {
+    type:'bar', data:{ labels: CANAIS.map(c=>c.name), datasets:[{ data: CANAIS.map(c=>c.value), backgroundColor: CANAIS.map((_,i) => i===0 ? PALETTE.wine : PALETTE.navy), borderRadius:4 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ backgroundColor:PALETTE.navy, callbacks:{ label: ctx => `${ctx.parsed.x} visitas (${Math.round(ctx.parsed.x/canaisTotal*100)}%)` }} },
+      scales:{ x:{beginAtZero:true, ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{color:PALETTE.gray200}}, y:{ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{display:false}} }
+    }
+  });
+
+  // TOPS
+  document.getElementById('top-corretores').innerHTML = TOP_CORRETORES.map((c,i) => `<div class="top-row"><span class="rank ${i===0?'r1':''}">${i+1}</span><span class="name">${c.name}</span><span class="count">${c.count}</span></div>`).join('');
+  document.getElementById('top-imobs').innerHTML = TOP_IMOBS.map((c,i) => `<div class="top-row"><span class="rank ${i===0?'r1':''}">${i+1}</span><span class="name">${c.name}</span><span class="count">${c.count}</span></div>`).join('');
+
+  // STAND TABLE
   let standHtml = '<table><thead><tr><th>#</th><th>Stand</th><th>Reportador</th><th class="num">Visitas</th><th class="num">Média/dia ativo</th><th class="num">% do total</th></tr></thead><tbody>';
-  standsRanked.forEach((r, i) => {
+  standsRanked.forEach((r,i) => {
     const idx = STANDS.indexOf(r.stand);
-    const ativos = days.filter(d => d.v[idx] > 0).length;
-    const media = ativos > 0 ? (r.total / ativos).toFixed(1) : '—';
-    const pct = total > 0 ? (r.total/total*100).toFixed(1) + '%' : '—';
-    standHtml += `<tr><td><span class="rank-cell ${i === 0 ? 'r1' : ''}">${i+1}</span></td><td><span class="stand-dot" style="background:${STAND_COLORS[r.stand]}"></span><strong${i === 0 ? ' style="color:var(--wine)"' : ''}>${r.stand}</strong></td><td style="color:var(--gray-500)">${reportadorOf(r.stand)}</td><td class="num">${r.total}</td><td class="num">${media}</td><td class="num">${pct}</td></tr>`;
+    const ativos = days.filter(d=>d.v[idx]>0).length;
+    const media = ativos>0 ? (r.total/ativos).toFixed(1) : '—';
+    const pct = total>0 ? (r.total/total*100).toFixed(1)+'%' : '—';
+    standHtml += `<tr onclick="toggleStandFilter('${r.stand}')"><td><span class="rank-cell ${i===0?'r1':''}">${i+1}</span></td><td><span class="stand-dot" style="background:${STAND_COLORS[r.stand]}"></span><strong${i===0?' style="color:var(--wine)"':''}>${r.stand}</strong></td><td style="color:var(--gray-500)">${reportadorOf(r.stand)}</td><td class="num">${r.total}</td><td class="num">${media}</td><td class="num">${pct}</td></tr>`;
   });
   standHtml += `<tr class="total-row"><td></td><td colspan="2">TOTAL</td><td class="num">${total}</td><td class="num">—</td><td class="num">100%</td></tr></tbody></table>`;
   document.getElementById('stand-table').innerHTML = standHtml;
 
   document.getElementById('detalhe-hint').textContent = `— ${days.length} dias · ${total} visitas`;
 
+  // DAY TABLE com comments
+  const comments = JSON.parse(localStorage.getItem('ebm-comments')||'{}');
   let dayHtml = '<table><thead><tr><th>Dia</th><th>Sem</th>';
   STANDS.forEach(s => dayHtml += `<th class="num"><span class="stand-dot" style="background:${STAND_COLORS[s]}"></span>${s}</th>`);
   dayHtml += '<th class="num">Total</th></tr></thead><tbody>';
   days.forEach(d => {
-    const t = d.v.reduce((a, b) => a + b, 0);
+    const t = d.v.reduce((a,b)=>a+b,0);
     const isPeak = peak.day && d.dia === peak.day.dia;
     const dow = DOW_NAMES[dayOfWeek(d.dia)];
-    const isWeekend = dayOfWeek(d.dia) === 0 || dayOfWeek(d.dia) === 6;
+    const isWeekend = dayOfWeek(d.dia)===0 || dayOfWeek(d.dia)===6;
     const isEvent = EVENTS.find(e => e.dia === d.dia);
-    dayHtml += `<tr${isPeak ? ' style="background: rgba(164,0,27,0.04)"' : ''}><td><strong>${d.dia}</strong>${isEvent ? ' <span style="color:var(--wine); font-size:11px" title="' + isEvent.desc + '">★</span>' : ''}${isPeak ? ' <span style="color:var(--wine); font-size:9px; font-weight:700">PICO</span>' : ''}</td><td style="color:${isWeekend ? 'var(--wine)' : 'var(--gray-500)'}; font-size:11px; font-weight:600">${dow}</td>`;
-    d.v.forEach(n => { dayHtml += `<td class="num">${n === 0 ? '<span style="color:var(--gray-400)">—</span>' : n}</td>`; });
+    const hasComment = !!comments[d.dia];
+    dayHtml += `<tr onclick="openDrillDown('${d.dia}')"${isPeak?' style="background: rgba(164,0,27,0.04)"':''}><td><strong>${d.dia}</strong>${isEvent?' <span style="color:var(--wine);font-size:11px" title="'+isEvent.desc+'">★</span>':''}${isPeak?' <span style="color:var(--wine);font-size:9px;font-weight:700">PICO</span>':''}<span class="day-comment ${hasComment?'has-comment':''}" title="${comments[d.dia]||'Adicionar nota'}">${hasComment?'📝':''}</span></td><td style="color:${isWeekend?'var(--wine)':'var(--gray-500)'};font-size:11px;font-weight:600">${dow}</td>`;
+    d.v.forEach(n => dayHtml += `<td class="num">${n===0?'<span style="color:var(--gray-400)">—</span>':n}</td>`);
     dayHtml += `<td class="num total">${t}</td></tr>`;
   });
   dayHtml += '<tr class="total-row"><td>TOTAL</td><td></td>';
@@ -855,48 +1251,32 @@ function render() {
   document.getElementById('day-table').innerHTML = dayHtml;
 }
 
-// ====== EVOLUÇÃO MENSAL (independente do tab) ======
+// === EVOLUÇÃO MENSAL (independente do tab) ===
 function buildEvolucaoChart() {
-  const monthIds = ['marco', 'abril', 'maio'];
-  const monthLabels = ['Março', 'Abril', 'Maio'];
-  const datasets = STANDS.map((stand, i) => ({
+  const monthIds = ['marco','abril','maio'];
+  const monthLabels = ['Março','Abril','Maio'];
+  const datasets = STANDS.map((stand,i) => ({
     label: stand,
     data: monthIds.map(mid => standTotalsFor(filterDays(mid))[i]),
     borderColor: STAND_COLORS[stand],
-    backgroundColor: STAND_COLORS[stand] + '22',
+    backgroundColor: STAND_COLORS[stand]+'22',
     tension: 0.3, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5, fill: false
   }));
   if (evoChart) evoChart.destroy();
   evoChart = new Chart(document.getElementById('chart-evolucao'), {
-    type: 'line',
-    data: { labels: monthLabels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top', labels: { color: PALETTE.gray500, font: { size: 12 }, padding: 14, boxWidth: 14, usePointStyle: true } },
-        tooltip: {
-          backgroundColor: PALETTE.navy, mode: 'index', intersect: false,
-          callbacks: {
-            label: (ctx) => {
-              const monthIdx = ctx.dataIndex;
-              const monthDays = filterDays(monthIds[monthIdx]);
-              const monthTot = totalVisits(monthDays);
-              const pct = monthTot > 0 ? Math.round(ctx.parsed.y / monthTot * 100) : 0;
-              return `${ctx.dataset.label}: ${ctx.parsed.y} (${pct}% do mês)`;
-            }
-          }
-        }
+    type:'line', data:{ labels: monthLabels, datasets },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top', labels:{color:PALETTE.gray500, font:{size:12}, padding:14, boxWidth:14, usePointStyle:true}},
+        tooltip:{ backgroundColor:PALETTE.navy, mode:'index', intersect:false,
+          callbacks:{ label:(ctx) => { const monthIdx = ctx.dataIndex; const monthDays = filterDays(monthIds[monthIdx]); const monthTot = totalVisits(monthDays); const pct = monthTot>0?Math.round(ctx.parsed.y/monthTot*100):0; return `${ctx.dataset.label}: ${ctx.parsed.y} (${pct}% do mês)`; } } }
       },
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: { ticks: { color: PALETTE.gray500, font: { size: 12, weight: 600 } }, grid: { display: false } },
-        y: { beginAtZero: true, ticks: { color: PALETTE.gray500, font: { size: 11 } }, grid: { color: PALETTE.gray200 } }
-      }
+      interaction:{mode:'index', intersect:false},
+      scales:{ x:{ticks:{color:PALETTE.gray500, font:{size:12, weight:600}}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:PALETTE.gray500, font:{size:11}}, grid:{color:PALETTE.gray200}} }
     }
   });
 }
 
-// ====== AÇÕES TOPBAR ======
+// === EVENT HANDLERS ===
 document.getElementById('btn-theme').addEventListener('click', () => {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
@@ -905,7 +1285,7 @@ document.getElementById('btn-theme').addEventListener('click', () => {
   try { localStorage.setItem('ebm-theme', next); } catch(e) {}
   buildEvolucaoChart(); render();
 });
-try { const sav = localStorage.getItem('ebm-theme'); if (sav === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('btn-theme').innerHTML = '☀️ Claro'; } } catch(e) {}
+try { const sav = localStorage.getItem('ebm-theme'); if (sav === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.getElementById('btn-theme').innerHTML = '☀️ Claro'; } } catch(e) {}
 
 document.getElementById('btn-compare').addEventListener('click', () => {
   compareMode = !compareMode;
@@ -913,47 +1293,105 @@ document.getElementById('btn-compare').addEventListener('click', () => {
   render();
 });
 
+document.getElementById('btn-present').addEventListener('click', () => {
+  document.body.classList.toggle('presentation');
+  if (document.body.classList.contains('presentation')) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+
 document.getElementById('btn-print').addEventListener('click', () => window.print());
 
-(function() {
+document.getElementById('btn-lang').addEventListener('click', () => {
+  lang = lang === 'pt' ? 'en' : 'pt';
+  document.getElementById('btn-lang').innerHTML = '🌐 ' + lang.toUpperCase();
+  localStorage.setItem('ebm-lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (I18N[lang][k]) el.textContent = I18N[lang][k]; });
+});
+
+document.getElementById('btn-help').addEventListener('click', () => {
+  alert('Atalhos:
+
+1-4: Trocar mês (Março/Abril/Maio/Total)
+M: Tema escuro/claro
+P: Modo apresentação
+C: Comparar mês anterior
+E: Exportar CSV
+R: Limpar filtros
+?: Esta ajuda
+
+Clique num stand do pódio pra filtrar.
+Clique num dia (heatmap, gráfico ou tabela) pra ver detalhes.');
+});
+
+document.getElementById('btn-csv').addEventListener('click', exportCSV);
+
+document.getElementById('btn-refresh').addEventListener('click', async () => {
   const btn = document.getElementById('btn-refresh');
   if (!btn) return;
-  btn.addEventListener('click', async () => {
-    btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
-    try {
-      if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
-        await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
-        btn.textContent = '✓ Coleta disparada — peça pra reconstruir o painel';
-      } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
-    } catch (e) { btn.textContent = '✗ Falha'; }
-    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
-  });
-})();
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
+  try {
+    if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
+      await window.cowork.runScheduledTask('relatorio-visitas-recepcoes-now');
+      btn.textContent = '✓ Coleta disparada — peça pra reconstruir';
+    } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
+  } catch (e) { btn.textContent = '✗ Falha'; }
+  setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
+});
 
-// ====== RANGE FILTER EVENTS ======
-document.querySelectorAll('.range-filter .quick').forEach(q => q.addEventListener('click', () => applyQuickRange(q.dataset.quick)));
-document.getElementById('range-start').addEventListener('change', (e) => { rangeStart = e.target.value || null; if (rangeStart && rangeEnd) { document.querySelectorAll('.range-filter .quick').forEach(q => q.classList.remove('active')); render(); } });
-document.getElementById('range-end').addEventListener('change', (e) => { rangeEnd = e.target.value || null; if (rangeStart && rangeEnd) { document.querySelectorAll('.range-filter .quick').forEach(q => q.classList.remove('active')); render(); } });
-document.getElementById('range-clear').addEventListener('click', () => { rangeStart = null; rangeEnd = null; document.getElementById('range-start').value = ''; document.getElementById('range-end').value = ''; document.querySelectorAll('.range-filter .quick').forEach(q => q.classList.remove('active')); document.querySelector('.range-filter .quick[data-quick="m"]').classList.add('active'); render(); });
+document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q => q.addEventListener('click', () => applyQuickRange(q.dataset.quick)));
+document.querySelectorAll('#reportador-filters .filter-chip').forEach(c => c.addEventListener('click', () => toggleReportadorFilter(c.dataset.rep)));
+document.getElementById('range-start').addEventListener('change', (e) => { rangeStart = e.target.value || null; if (rangeStart && rangeEnd) { document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q=>q.classList.remove('active')); writeUrlState(); render(); } });
+document.getElementById('range-end').addEventListener('change', (e) => { rangeEnd = e.target.value || null; if (rangeStart && rangeEnd) { document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q=>q.classList.remove('active')); writeUrlState(); render(); } });
+document.getElementById('range-clear').addEventListener('click', () => { rangeStart = null; rangeEnd = null; document.getElementById('range-start').value=''; document.getElementById('range-end').value=''; document.querySelectorAll('.filter-bar .filter-chip[data-quick]').forEach(q=>q.classList.toggle('active', q.dataset.quick==='m')); writeUrlState(); render(); });
 
-// ====== SIDENAV — destacar seção ativa no scroll ======
-const sections = ['hero','resumo','podium','daily','evolucao','analise','ranking','detalhe'];
-function updateSidenav() {
+document.getElementById('goal-input').value = goalValue;
+document.getElementById('goal-input').addEventListener('change', (e) => { goalValue = parseInt(e.target.value, 10) || 600; localStorage.setItem('ebm-goal', goalValue); render(); });
+
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal').classList.remove('show'));
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') document.getElementById('modal').classList.remove('show'); });
+
+// === KEYBOARD SHORTCUTS ===
+document.addEventListener('keydown', (e) => {
+  if (e.target.matches('input, textarea, select')) return;
+  const k = e.key.toLowerCase();
+  if (['1','2','3','4'].includes(k)) { switchMonth(['marco','abril','maio','total'][parseInt(k)-1]); }
+  else if (k === 'm') document.getElementById('btn-theme').click();
+  else if (k === 'p') document.getElementById('btn-present').click();
+  else if (k === 'c') document.getElementById('btn-compare').click();
+  else if (k === 'e') exportCSV();
+  else if (k === 'r') { standFilter = null; reportadorFilter = null; document.querySelectorAll('#reportador-filters .filter-chip').forEach(c=>c.classList.remove('active')); writeUrlState(); render(); }
+  else if (k === '?') document.getElementById('btn-help').click();
+  else if (k === 'escape') document.getElementById('modal').classList.remove('show');
+});
+
+// === SCROLL PROGRESS + SIDENAV ===
+const sections = ['hero','goal','resumo','heatmap','podium','compare','daily','evolucao','analise','canais','tops','ranking','detalhe'];
+function updateScroll() {
+  const scrollTop = window.pageYOffset;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('scroll-bar').style.width = (scrollTop/docHeight*100) + '%';
   let active = sections[0];
   for (const id of sections) {
     const el = document.getElementById(id);
     if (el && el.getBoundingClientRect().top < 200) active = id;
   }
-  document.querySelectorAll('#sidenav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active));
+  document.querySelectorAll('#sidenav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+active));
 }
-window.addEventListener('scroll', updateSidenav, { passive: true });
+window.addEventListener('scroll', updateScroll, { passive: true });
 
-// ====== INIT ======
+// === INIT ===
+readUrlState();
 buildTabs();
-switchMonth('abril');
+document.querySelectorAll('#month-tabs .mtab').forEach(t => t.classList.toggle('active', t.dataset.id === currentMonth));
+if (reportadorFilter) document.querySelectorAll('#reportador-filters .filter-chip').forEach(c => c.classList.toggle('active', c.dataset.rep === reportadorFilter));
+render();
 buildEvolucaoChart();
 renderStatusBar();
-updateSidenav();
+renderPendingBanner();
+renderHeatmap();
+renderMonthCompare();
+updateScroll();
+if (lang !== 'pt') document.getElementById('btn-lang').click();
 </script>
 </body>
 </html>
