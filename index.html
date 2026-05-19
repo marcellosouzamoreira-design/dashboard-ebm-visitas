@@ -536,10 +536,10 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">18/05/2026 01:12</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">19/05/2026 00:45</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <button class="refresh-btn" id="btn-refresh">↻ Atualizar dados</button>
     </div>
   </footer>
 
@@ -565,7 +565,6 @@ const STAND_COLORS = { 'NOW Laguna':'#003D6B','NOW 111':'#5C7E9C','Pitangueira':
 const REPORTADOR_STANDS = { Rayanne:['NOW Laguna','NOW 111'], Ramon:['Pitangueira','Pq. America'], Renato:['NOW BSB'] };
 
 // ===DATA-START=== auto-atualizado pela scheduled task dashboard-visitas-rebuild; nao edite entre os marcadores
-
 const allDays = [
   { dia:'11/03', mes:'marco', v:[6,0,1,4,1] },
   { dia:'12/03', mes:'marco', v:[3,1,3,4,4] },
@@ -584,7 +583,7 @@ const allDays = [
   { dia:'25/03', mes:'marco', v:[3,0,4,7,4] },
   { dia:'26/03', mes:'marco', v:[4,2,10,0,9] },
   { dia:'27/03', mes:'marco', v:[5,4,1,3,7] },
-  { dia:'28/03', mes:'marco', v:[12,0,0,51,15] },
+  { dia:'28/03', mes:'marco', v:[0,0,0,0,0] },
   { dia:'29/03', mes:'marco', v:[1,0,0,0,1] },
   { dia:'30/03', mes:'marco', v:[1,0,0,0,5] },
   { dia:'31/03', mes:'marco', v:[0,0,3,1,0] },
@@ -636,7 +635,6 @@ const allDays = [
   { dia:'16/05', mes:'maio', v:[12,8,14,4,35] },
   { dia:'17/05', mes:'maio', v:[0,0,0,0,2] }
 ];
-
 const EVENTS = [
   { dia:'14/03', desc:'Sábado pico Março', total: 35 },
   { dia:'21/03', desc:'Sábado movimentado', total: 49 },
@@ -647,16 +645,13 @@ const EVENTS = [
   { dia:'28/04', desc:'Repique Trancoso', total: 55 },
   { dia:'02/05', desc:'Renato sozinho', total: 17 },
 ];
-
 const PROSPECCAO = [
-  { name:'Agendada', value:713 },
-  { name:'Espontânea', value:101 },
-  { name:'Retorno', value:55 },
+  { name:'Agendada', value:708 },
+  { name:'Espontânea', value:105 },
+  { name:'Retorno', value:56 },
   { name:'Outros', value:12 }
 ];
-
 const PROSPECCAO_PERIODO = '08/04 a 17/05';
-
 const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
   { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
