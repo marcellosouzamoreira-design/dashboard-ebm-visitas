@@ -539,7 +539,7 @@
     <span>Última coleta: <strong id="last-updated">19/05/2026 00:45</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <span style="font-size:11px;color:var(--gray-500)">Auto-update diário às 00:30</span>
     </div>
   </footer>
 
@@ -1374,6 +1374,21 @@ function updateScroll() {
 }
 window.addEventListener('scroll', updateScroll, { passive: true });
 
+
+// Expose globals para v4 addons
+window.allDays = allDays;
+window.STANDS = STANDS;
+window.STAND_COLORS = STAND_COLORS;
+window.MONTHS = MONTHS;
+window.PROSPECCAO = PROSPECCAO;
+window.filterDays = filterDays;
+window.totalVisits = totalVisits;
+window.standTotalsFor = standTotalsFor;
+window.reportadorTotalsFor = reportadorTotalsFor;
+window.getActiveDays = getActiveDays;
+window.switchMonth = switchMonth;
+Object.defineProperty(window, 'currentMonth', { get: () => currentMonth });
+
 // === INIT ===
 readUrlState();
 buildTabs();
@@ -1388,5 +1403,571 @@ renderMonthCompare();
 updateScroll();
 if (lang !== 'pt') document.getElementById('btn-lang').click();
 </script>
+
+<!-- ===V4 ADDONS START=== -->
+<style id="v4-styles">
+  /* Avatares reportadores */
+  .avatar { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; color:#fff; font-size:10px; font-weight:800; margin-right:6px; vertical-align:-5px; }
+  .avatar.rayanne { background: #003D6B; }
+  .avatar.ramon { background: #1B5A8C; }
+  .avatar.renato { background: #A4001B; }
+
+  /* Mini-mapa de stands */
+  .map-stands { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px; }
+  .map-region { background: var(--panel-alt); border:1px solid var(--gray-200); border-radius:8px; padding:12px; position:relative; }
+  .map-region h4 { margin:0 0 6px; font-size:11px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px; }
+  .map-pin { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:600; margin:3px 4px 3px 0; cursor:pointer; transition:transform .15s; }
+  .map-pin:hover { transform: translateY(-1px); }
+  .map-pin .pin-dot { width:8px; height:8px; border-radius:50%; }
+  .map-pin .pin-count { color:var(--gray-500); font-weight:500; font-size:10px; }
+
+  /* Anomaly badges */
+  .anomaly-badge { display:inline-block; padding:1px 6px; border-radius:8px; font-size:10px; font-weight:700; margin-left:6px; }
+  .anomaly-badge.high { background:rgba(4,120,87,0.15); color:var(--green); }
+  .anomaly-badge.low { background:rgba(164,0,27,0.15); color:var(--wine); }
+
+  /* Live mode indicator */
+  .live-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--green); margin-right:4px; animation:pulse 2s infinite; }
+  .live-dot.off { background:var(--gray-400); animation:none; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Mobile bottom nav */
+  .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--panel); border-top:1px solid var(--gray-200); padding:6px; z-index:50; box-shadow:0 -2px 8px rgba(0,0,0,0.06); }
+  .bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; padding:6px 2px; color:var(--gray-500); text-decoration:none; font-size:9px; font-weight:600; }
+  .bottom-nav a.active { color:var(--wine); }
+  .bottom-nav .ico { font-size:18px; line-height:1; }
+
+  @media (max-width: 900px) {
+    .bottom-nav { display:flex; }
+    body { padding-bottom:60px; }
+  }
+
+  /* TV mode */
+  body.tv-mode { background:#000; color:#fff; overflow:hidden; }
+  body.tv-mode .header { background:#000; border-bottom-color:var(--wine); padding:20px 32px; }
+  body.tv-mode .header h1 { font-size:26px; }
+  body.tv-mode .topbar-actions, body.tv-mode .month-tabs, body.tv-mode .filter-bar, body.tv-mode .breadcrumb, body.tv-mode .sidenav, body.tv-mode .bottom-nav, body.tv-mode footer, body.tv-mode .kbd-hint, body.tv-mode #pending-banner { display:none !important; }
+  body.tv-mode .layout { grid-template-columns:1fr; padding:32px; max-width:100%; gap:24px; }
+  body.tv-mode .hero-main { background:#0a0a0a; border-color:#222; }
+  body.tv-mode .hero-main .value { font-size:160px; line-height:1; }
+  body.tv-mode .hero-side { background:#0a0a0a; border-color:#222; padding:20px; }
+  body.tv-mode .hero-side .stand { font-size:24px; }
+  body.tv-mode .hero-side .visits { font-size:48px; }
+  body.tv-mode .pod { background:#0a0a0a; border-color:#222; padding:18px; }
+  body.tv-mode .pod .stand-visits { font-size:42px; }
+  body.tv-mode .pod .stand-name { font-size:16px; }
+  body.tv-mode .panel { background:#0a0a0a; border-color:#222; }
+  body.tv-mode .panel h2 { background:#000; color:#fff; font-size:14px; padding:14px 18px; }
+  body.tv-mode .insight, body.tv-mode td, body.tv-mode th { color:#ddd; border-color:#222; }
+  body.tv-mode th { background:#000; }
+  body.tv-mode #v4-marquee { display:block; }
+
+  /* Marquee de destaque pro TV mode */
+  #v4-marquee { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--wine); color:#fff; padding:14px; font-size:22px; font-weight:700; text-align:center; z-index:100; box-shadow:0 -4px 16px rgba(0,0,0,0.5); }
+
+  /* New section styles */
+  .week-compare { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; padding:14px; }
+  .week-card { background:var(--panel-alt); border:1px solid var(--gray-200); border-radius:8px; padding:12px; }
+  .week-card .label { font-size:10px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
+  .week-card .num { font-size:24px; font-weight:800; color:var(--navy); margin:4px 0; }
+  .week-card .delta { font-size:11px; font-weight:600; }
+  .week-card .delta.up { color:var(--green); }
+  .week-card .delta.down { color:var(--wine); }
+
+  .periodo-bars { padding:14px; }
+  .periodo-row { display:grid; grid-template-columns:60px 1fr 50px; gap:10px; align-items:center; padding:6px 0; font-size:13px; }
+  .periodo-row .label { color:var(--navy); font-weight:600; font-size:12px; }
+  .periodo-row .bar-bg { height:14px; background:var(--gray-100); border-radius:7px; overflow:hidden; }
+  .periodo-row .bar-fill { height:100%; transition:width .6s; }
+  .periodo-row .bar-fill.manha { background:#FFA726; }
+  .periodo-row .bar-fill.tarde { background:#FB8C00; }
+  .periodo-row .bar-fill.noite { background:#5E35B1; }
+  .periodo-row .pct { text-align:right; font-weight:700; color:var(--navy); font-size:12px; }
+
+  .canal-stand-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; padding:14px; }
+  .canal-stand-card { background:var(--panel-alt); border:1px solid var(--gray-200); border-radius:8px; padding:12px; }
+  .canal-stand-card h4 { margin:0 0 8px; font-size:12px; color:var(--navy); }
+  .canal-stand-row { display:flex; align-items:center; gap:8px; padding:3px 0; font-size:11px; }
+  .canal-stand-row .bar { flex:1; height:10px; background:var(--gray-100); border-radius:5px; overflow:hidden; }
+  .canal-stand-row .fill { height:100%; background:var(--navy); }
+  .canal-stand-row .num { font-weight:700; color:var(--navy); min-width:30px; text-align:right; font-size:11px; }
+  .canal-stand-row .name { flex:0 0 110px; color:var(--gray-700); font-size:10.5px; }
+
+  .anomaly-list { padding:8px 0; }
+  .anomaly-item { padding:10px 16px; border-bottom:1px solid var(--gray-200); display:flex; gap:12px; align-items:center; font-size:13px; }
+  .anomaly-item:last-child { border-bottom:none; }
+  .anomaly-item .ic { width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:11px; font-weight:800; }
+  .anomaly-item.high .ic { background:var(--green); }
+  .anomaly-item.low .ic { background:var(--wine); }
+  .anomaly-item .dia { font-weight:700; color:var(--navy); min-width:50px; }
+  .anomaly-item .text { flex:1; color:var(--gray-700); }
+  .anomaly-item .num { font-weight:800; font-size:16px; color:var(--navy); }
+
+  .audit-list { padding:8px 0; max-height:300px; overflow-y:auto; }
+  .audit-item { padding:8px 16px; border-bottom:1px solid var(--gray-100); display:grid; grid-template-columns:80px 1fr 70px; gap:8px; font-size:12px; }
+  .audit-item:last-child { border-bottom:none; }
+  .audit-item .sha { color:var(--wine); font-family:monospace; font-weight:600; font-size:11px; }
+  .audit-item .msg { color:var(--gray-700); }
+  .audit-item .when { color:var(--gray-400); font-size:11px; text-align:right; }
+
+  /* Toast for WA share, etc */
+  #v4-toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; padding:10px 16px; border-radius:6px; font-size:13px; box-shadow:var(--shadow-md); z-index:200; opacity:0; transition:opacity .3s; pointer-events:none; }
+  #v4-toast.show { opacity:1; }
+</style>
+
+<!-- Mobile bottom nav -->
+<nav class="bottom-nav" id="v4-bottom-nav">
+  <a href="#hero" class="active"><span class="ico">📊</span>Geral</a>
+  <a href="#heatmap"><span class="ico">📅</span>Cal</a>
+  <a href="#podium"><span class="ico">🏆</span>Pódio</a>
+  <a href="#daily"><span class="ico">📈</span>Diário</a>
+  <a href="#detalhe"><span class="ico">📝</span>Mais</a>
+</nav>
+
+<div id="v4-toast"></div>
+<div id="v4-marquee">🏆 EBM VISITAS — MODO TV ATIVO 🏆</div>
+
+<script id="v4-script">
+(function() {
+  if (!window.allDays || !window.STANDS) {
+    console.warn('v4: aguardando dados do dashboard');
+    setTimeout(() => location.reload(), 1000);
+    return;
+  }
+
+  // ===== DADOS ADICIONAIS =====
+  // Aproximação de canais por stand (do Excel Março sheet "Ranking Canais")
+  const CANAIS_POR_STAND = {
+    'NOW Laguna':    [['House BEM',35],['Class MAP',23],['Place+',12],['Class BEM',11],['Outros',8],['Espontânea',6],['Autônomo',4]],
+    'NOW 111':       [['House BEM',4],['Place+',3],['Class MAP',3],['Espontânea',2]],
+    'Pitangueira':   [['House BEM',27],['Class MAP',26],['Class BEM',15],['Place+',13],['Espontânea',1]],
+    'Pq. America':   [['House BEM',81],['Class MAP',47],['Class BEM',23],['Place+',12],['Espontânea',1]],
+    'NOW BSB':       [['Agendado EBM/Kézia',90]]
+  };
+
+  // Aproximação período do dia (do log relatório 05-03 + Rayanne report)
+  // Manhã ~25%, Tarde ~60%, Noite ~15%
+  const PERIODO_APROX = [
+    { label:'Manhã',  pct: 25, cls:'manha' },
+    { label:'Tarde',  pct: 60, cls:'tarde' },
+    { label:'Noite',  pct: 15, cls:'noite' }
+  ];
+
+  // Regiões dos stands
+  const STAND_REGIONS = {
+    'Pq. América':  { region:'Norte (Trancoso/Cancún)', emoji:'🏖' },
+    'Pitangueira':  { region:'Sul (Reserva Urbana)', emoji:'🏙' },
+    'NOW Laguna':   { region:'Centro (Laguna)', emoji:'🌊' },
+    'NOW 111':      { region:'Centro (Setor 111)', emoji:'🏬' },
+    'NOW BSB':      { region:'Brasília (Samambaia)', emoji:'🏛' }
+  };
+
+  // ===== HELPERS =====
+  const $ = (id) => document.getElementById(id);
+  const toast = (msg, dur=2500) => { const t = $('v4-toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), dur); };
+  const reportadorClass = (r) => ({Rayanne:'rayanne', Ramon:'ramon', Renato:'renato'})[r];
+  const reportadorInitial = (r) => r[0];
+
+  // Inserir avatar nos KPIs (substitui texto plano)
+  function injectAvatars() {
+    document.querySelectorAll('#hero-meta1, #hero-meta2').forEach(el => {
+      const m = el.textContent.match(/(Rayanne|Ramon|Renato)/);
+      if (m) {
+        const r = m[1];
+        el.innerHTML = el.textContent.replace(r, `<span class="avatar ${reportadorClass(r)}">${reportadorInitial(r)}</span>${r}`);
+      }
+    });
+  }
+
+  // ===== ANOMALY DETECTION =====
+  function detectAnomalies() {
+    const totals = window.allDays.map(d => ({ dia: d.dia, mes: d.mes, sum: d.v.reduce((a,b)=>a+b,0) }));
+    const mean = totals.reduce((s,d)=>s+d.sum,0) / totals.length;
+    const variance = totals.reduce((s,d)=>s+(d.sum-mean)**2,0) / totals.length;
+    const std = Math.sqrt(variance);
+    const anomalies = totals
+      .map(d => ({ ...d, z: (d.sum - mean)/std }))
+      .filter(d => Math.abs(d.z) >= 1.5)
+      .sort((a,b) => Math.abs(b.z) - Math.abs(a.z))
+      .slice(0, 8);
+    return { mean: mean.toFixed(1), std: std.toFixed(1), anomalies };
+  }
+
+  // ===== WEEK COMPARISON =====
+  function weekBuckets() {
+    // Agrupa por semana ISO. Semana começa segunda.
+    const weeks = {};
+    window.allDays.forEach(d => {
+      const [a,b] = d.dia.split('/').map(Number);
+      const date = new Date(2026, b-1, a);
+      const onejan = new Date(2026, 0, 1);
+      const week = Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+      if (!weeks[week]) weeks[week] = { week, days: 0, sum: 0, start: d.dia, end: d.dia };
+      weeks[week].days++;
+      weeks[week].sum += d.v.reduce((a,b)=>a+b,0);
+      weeks[week].end = d.dia;
+    });
+    return Object.values(weeks).slice(-8);
+  }
+
+  // ===== VALIDAÇÃO CRUZADA =====
+  function validateSources() {
+    // Verifica se totais Mar/Abr/Mai batem com expected
+    const expected = { marco: 453, abril: 604, maio: 124 };
+    const actual = {};
+    window.allDays.forEach(d => { actual[d.mes] = (actual[d.mes] || 0) + d.v.reduce((a,b)=>a+b,0); });
+    const issues = [];
+    Object.entries(expected).forEach(([k,v]) => {
+      const diff = (actual[k]||0) - v;
+      if (diff !== 0) issues.push(`${k}: esperado ${v}, atual ${actual[k]||0} (Δ ${diff>=0?'+':''}${diff})`);
+    });
+    return issues;
+  }
+
+  // ===== AUDIT LOG (GitHub commits) =====
+  async function fetchAuditLog() {
+    try {
+      const r = await fetch('https://api.github.com/repos/marcellosouzamoreira-design/dashboard-ebm-visitas/commits?per_page=10');
+      if (!r.ok) return [];
+      return await r.json();
+    } catch(e) { return []; }
+  }
+
+  // ===== LIVE MODE =====
+  let liveInterval = null;
+  let lastKnownSha = null;
+  async function pollGitHub() {
+    try {
+      const r = await fetch('https://api.github.com/repos/marcellosouzamoreira-design/dashboard-ebm-visitas/commits/main');
+      if (!r.ok) return;
+      const data = await r.json();
+      const sha = data.sha;
+      if (lastKnownSha && sha !== lastKnownSha) {
+        toast('🔔 Nova versão disponível — recarregando em 5s', 5000);
+        setTimeout(() => location.reload(), 5000);
+      }
+      lastKnownSha = sha;
+      const dot = document.querySelector('#v4-live-btn .live-dot');
+      if (dot) dot.classList.remove('off');
+    } catch(e) {
+      const dot = document.querySelector('#v4-live-btn .live-dot');
+      if (dot) dot.classList.add('off');
+    }
+  }
+
+  // ===== WHATSAPP SHARE =====
+  function buildWhatsAppCaption() {
+    const meta = window.MONTHS.find(m => m.id === window.currentMonth);
+    const days = window.getActiveDays();
+    const total = window.totalVisits(days);
+    const standTotals = window.standTotalsFor(days);
+    const ranked = window.STANDS.map((s,i)=>({s, t:standTotals[i]})).sort((a,b)=>b.t-a.t);
+    const repTotals = window.reportadorTotalsFor(days);
+    const repRanked = Object.entries(repTotals).map(([n,t])=>({n,t})).sort((a,b)=>b.t-a.t);
+    const lines = [
+      `🚨 *${meta.label} — ${days.length} dias* 🚨`,
+      ``,
+      `📊 *${total} visitas* (média ${(total/days.length).toFixed(1)}/dia)`,
+      ``,
+      `🏆 *TOP STANDS:*`,
+      `🥇 ${ranked[0].s} — ${ranked[0].t} (${Math.round(ranked[0].t/total*100)}%)`,
+      `🥈 ${ranked[1].s} — ${ranked[1].t}`,
+      `🥉 ${ranked[2].s} — ${ranked[2].t}`,
+      ``,
+      `👤 *POR REPORTADOR:*`,
+      `${repRanked.map((r,i)=>`${['🥇','🥈','🥉'][i]} ${r.n} — ${r.t}`).join(' | ')}`,
+      ``,
+      `📊 Painel ao vivo (atualiza 00:30):`,
+      `https://marcellosouzamoreira-design.github.io/dashboard-ebm-visitas/`,
+      ``,
+      `*Bora pra cima!* 🚀💰`
+    ];
+    return lines.join('\n');
+  }
+
+  function shareWhatsApp() {
+    const caption = buildWhatsAppCaption();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(caption).then(() => toast('✓ Copiado! Cola no WhatsApp 📱', 3000));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = caption; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      toast('✓ Copiado!', 3000);
+    }
+  }
+
+  // ===== TV MODE =====
+  let tvInterval = null;
+  let tvCycle = 0;
+  function toggleTvMode() {
+    document.body.classList.toggle('tv-mode');
+    if (document.body.classList.contains('tv-mode')) {
+      document.documentElement.requestFullscreen?.();
+      tvInterval = setInterval(() => {
+        const tabs = ['marco','abril','maio','total'];
+        tvCycle = (tvCycle + 1) % tabs.length;
+        if (window.switchMonth) window.switchMonth(tabs[tvCycle]);
+      }, 12000);
+    } else {
+      clearInterval(tvInterval);
+      document.exitFullscreen?.();
+    }
+  }
+
+  // ===== INSERIR NOVAS SEÇÕES =====
+  const mainEl = document.querySelector('main');
+  if (!mainEl) return;
+
+  // Cria as 6 novas seções
+  const v4Sections = document.createElement('div');
+  v4Sections.innerHTML = `
+    <section id="map-stands">
+      <div class="panel">
+        <h2>📍 Mapa dos Stands — visitas por região</h2>
+        <div class="map-stands" id="v4-map"></div>
+      </div>
+    </section>
+
+    <section id="periodo">
+      <div class="panel">
+        <h2>⏰ Período do dia <span class="legend">aproximação · Manhã / Tarde / Noite</span></h2>
+        <div class="periodo-bars" id="v4-periodo"></div>
+      </div>
+    </section>
+
+    <section id="canais-stand">
+      <div class="panel">
+        <h2>📺 Canais de captação por stand <span class="legend">Março 2026</span></h2>
+        <div class="canal-stand-grid" id="v4-canais-stand"></div>
+      </div>
+    </section>
+
+    <section id="semanas">
+      <div class="panel">
+        <h2>📈 Comparação semana a semana</h2>
+        <div class="week-compare" id="v4-weeks"></div>
+      </div>
+    </section>
+
+    <section id="anomalies">
+      <div class="panel">
+        <h2>⚠ Anomalias detectadas <span class="legend">dias ≥1,5σ acima/abaixo da média</span></h2>
+        <div class="anomaly-list" id="v4-anomalies"></div>
+      </div>
+    </section>
+
+    <section id="audit">
+      <div class="panel">
+        <h2>🔍 Audit log / histórico de versões</h2>
+        <div id="v4-validation" style="padding: 14px 18px; border-bottom: 1px solid var(--gray-200);"></div>
+        <div class="audit-list" id="v4-audit"></div>
+      </div>
+    </section>
+  `;
+  // Insere antes da seção "detalhe" (última)
+  const detalheSection = document.getElementById('detalhe');
+  if (detalheSection) {
+    Array.from(v4Sections.children).forEach(s => mainEl.insertBefore(s, detalheSection));
+  } else {
+    mainEl.appendChild(v4Sections);
+  }
+
+  // Adiciona âncoras ao sidenav
+  const sidenav = document.getElementById('sidenav');
+  if (sidenav) {
+    const newAnchors = `
+      <a href="#map-stands">📍 Mapa</a>
+      <a href="#periodo">⏰ Período</a>
+      <a href="#canais-stand">📺 Canal/Stand</a>
+      <a href="#semanas">📈 Semanas</a>
+      <a href="#anomalies">⚠ Anomalias</a>
+      <a href="#audit">🔍 Audit</a>
+    `;
+    sidenav.insertAdjacentHTML('beforeend', newAnchors);
+  }
+
+  // Botões topbar v4
+  const topbar = document.querySelector('.topbar-actions');
+  if (topbar) {
+    topbar.insertAdjacentHTML('afterbegin', `
+      <button class="icon-btn" id="v4-live-btn" title="Live mode — auto-check GitHub"><span class="live-dot off"></span>Live</button>
+      <button class="icon-btn" id="v4-tv-btn" title="Modo TV (T)">📺 TV</button>
+      <button class="icon-btn" id="v4-wa-btn" title="Copiar caption pro WhatsApp">💬 WA</button>
+    `);
+  }
+
+  // Handlers
+  $('v4-live-btn').addEventListener('click', () => {
+    if (liveInterval) { clearInterval(liveInterval); liveInterval = null; document.querySelector('#v4-live-btn .live-dot').classList.add('off'); toast('Live OFF'); }
+    else { pollGitHub(); liveInterval = setInterval(pollGitHub, 60000); toast('Live ON — checa GitHub a cada 60s'); }
+  });
+  $('v4-tv-btn').addEventListener('click', toggleTvMode);
+  $('v4-wa-btn').addEventListener('click', shareWhatsApp);
+
+  // Atalho teclado T pra TV
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea, select')) return;
+    if (e.key.toLowerCase() === 't') toggleTvMode();
+    if (e.key.toLowerCase() === 'w') shareWhatsApp();
+  });
+
+  // Touch swipe entre tabs
+  let touchStartX = null;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 80) {
+      const tabs = ['marco','abril','maio','total'];
+      const idx = tabs.indexOf(window.currentMonth);
+      if (dx < 0 && idx < tabs.length-1) window.switchMonth(tabs[idx+1]);
+      else if (dx > 0 && idx > 0) window.switchMonth(tabs[idx-1]);
+    }
+    touchStartX = null;
+  }, { passive: true });
+
+  // ===== RENDERS =====
+  function renderMap() {
+    const days = window.allDays;
+    const totals = window.STANDS.map((s,i) => ({ stand: s, total: days.reduce((t,d) => t + d.v[i], 0) }));
+    const regions = {};
+    totals.forEach(t => {
+      const r = STAND_REGIONS[t.stand];
+      if (!r) return;
+      const key = r.region.split(' ')[0];
+      if (!regions[key]) regions[key] = { name: r.region, emoji: r.emoji, stands: [] };
+      regions[key].stands.push({...t, region:r});
+    });
+    $('v4-map').innerHTML = Object.entries(regions).map(([k,r]) => `
+      <div class="map-region">
+        <h4>${r.emoji} ${r.name}</h4>
+        ${r.stands.map(s => `<span class="map-pin"><span class="pin-dot" style="background:${window.STAND_COLORS ? window.STAND_COLORS[s.stand] : '#003D6B'}"></span>${s.stand}<span class="pin-count">${s.total}</span></span>`).join('')}
+      </div>
+    `).join('');
+  }
+
+  function renderPeriodo() {
+    $('v4-periodo').innerHTML = PERIODO_APROX.map(p => `
+      <div class="periodo-row">
+        <span class="label">${p.label}</span>
+        <div class="bar-bg"><div class="bar-fill ${p.cls}" style="width:${p.pct}%"></div></div>
+        <span class="pct">${p.pct}%</span>
+      </div>
+    `).join('') + '<div style="font-size:11px;color:var(--gray-500);margin-top:8px;">Aproximação baseada nos relatórios. Períodos dominantes: Tarde (60%, vespertino) e Manhã (25%). Noite concentra atendimentos de Renato (NOW BSB).</div>';
+  }
+
+  function renderCanaisStand() {
+    $('v4-canais-stand').innerHTML = Object.entries(CANAIS_POR_STAND).map(([stand, canais]) => {
+      const total = canais.reduce((s,[_,v]) => s+v, 0);
+      return `
+        <div class="canal-stand-card">
+          <h4>🏪 ${stand} <span style="color:var(--gray-400);font-weight:500;font-size:10px;">${total} visitas</span></h4>
+          ${canais.map(([name, count]) => `
+            <div class="canal-stand-row">
+              <span class="name">${name}</span>
+              <div class="bar"><div class="fill" style="width:${count/total*100}%"></div></div>
+              <span class="num">${count}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderWeeks() {
+    const weeks = weekBuckets();
+    $('v4-weeks').innerHTML = weeks.map((w, i) => {
+      const prev = i > 0 ? weeks[i-1].sum : null;
+      const delta = prev !== null ? w.sum - prev : null;
+      const pct = prev !== null && prev > 0 ? Math.round((delta/prev)*100) : null;
+      return `
+        <div class="week-card">
+          <div class="label">Semana ${w.week}</div>
+          <div class="num">${w.sum}</div>
+          <div style="font-size:11px;color:var(--gray-500);">${w.start} a ${w.end} · ${w.days} dias</div>
+          ${delta !== null ? `<div class="delta ${delta>=0?'up':'down'}">${delta>=0?'▲':'▼'} ${pct>=0?'+':''}${pct}% (${delta>=0?'+':''}${delta})</div>` : '<div class="delta">—</div>'}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderAnomalies() {
+    const { mean, std, anomalies } = detectAnomalies();
+    if (anomalies.length === 0) {
+      $('v4-anomalies').innerHTML = '<div style="padding:18px;text-align:center;color:var(--gray-500);">Nenhuma anomalia detectada. Tudo dentro de ±1.5σ da média (' + mean + '/dia).</div>';
+      return;
+    }
+    $('v4-anomalies').innerHTML = `<div style="padding:10px 18px;background:var(--gray-50);font-size:11px;color:var(--gray-500);border-bottom:1px solid var(--gray-200);">Média geral: <strong>${mean}/dia</strong> · σ ${std}</div>` + anomalies.map(a => `
+      <div class="anomaly-item ${a.z>0?'high':'low'}">
+        <span class="ic">${a.z>0?'↑':'↓'}</span>
+        <span class="dia">${a.dia}</span>
+        <span class="text">${a.z>0?'Acima':'Abaixo'} do esperado — z-score ${a.z.toFixed(2)} · ${(Math.abs(a.z)*100/2).toFixed(0)}% ${a.z>0?'maior':'menor'} que a média</span>
+        <span class="num">${a.sum}</span>
+      </div>
+    `).join('');
+  }
+
+  function renderValidation() {
+    const issues = validateSources();
+    const el = $('v4-validation');
+    if (issues.length === 0) {
+      el.innerHTML = '<span style="color:var(--green);font-weight:600;">✓ Validação cruzada: todos os totais por mês batem com expected (Março 453, Abril 604, Maio 124).</span>';
+    } else {
+      el.innerHTML = '<strong style="color:var(--amber);">⚠ Divergências:</strong> ' + issues.join(' · ');
+    }
+  }
+
+  async function renderAudit() {
+    const commits = await fetchAuditLog();
+    if (commits.length === 0) {
+      $('v4-audit').innerHTML = '<div style="padding:14px;color:var(--gray-500);text-align:center;font-size:12px;">Carregando commits...</div>';
+      return;
+    }
+    $('v4-audit').innerHTML = commits.map(c => {
+      const date = new Date(c.commit.author.date);
+      const ago = Math.round((Date.now() - date) / 86400000);
+      return `<div class="audit-item">
+        <span class="sha"><a href="${c.html_url}" target="_blank" style="color:inherit;text-decoration:none;">${c.sha.slice(0,7)}</a></span>
+        <span class="msg">${c.commit.message.split('\n')[0].slice(0,80)}</span>
+        <span class="when">${ago === 0 ? 'hoje' : ago + 'd atrás'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ===== INIT v4 =====
+  injectAvatars();
+  renderMap();
+  renderPeriodo();
+  renderCanaisStand();
+  renderWeeks();
+  renderAnomalies();
+  renderValidation();
+  renderAudit();
+
+  // Re-aplicar ao trocar tab/filtros
+  const origSwitchMonth = window.switchMonth;
+  if (origSwitchMonth) {
+    window.switchMonth = function(id) {
+      origSwitchMonth(id);
+      setTimeout(() => { renderWeeks(); renderAnomalies(); injectAvatars(); }, 100);
+    };
+  }
+
+  // Mobile bottom nav highlight
+  window.addEventListener('scroll', () => {
+    const ids = ['hero','heatmap','podium','daily','detalhe'];
+    let active = ids[0];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 200) active = id;
+    }
+    document.querySelectorAll('#v4-bottom-nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+active));
+  }, { passive: true });
+
+  console.log('v4 addons loaded');
+})();
+</script>
+<!-- ===V4 ADDONS END=== -->
+
 </body>
 </html>
