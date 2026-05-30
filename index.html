@@ -536,10 +536,10 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">29/05/2026 00:56</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">30/05/2026 00:43</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
+      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
       <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
-      <button class="refresh-btn" id="btn-refresh">↻ Atualizar dados</button>
     </div>
   </footer>
 
@@ -588,12 +588,12 @@ const allDays = [
   { dia:'30/03', mes:'marco', v:[1, 0, 0, 0, 5] },
   { dia:'31/03', mes:'marco', v:[0, 0, 3, 1, 0] },
   { dia:'01/04', mes:'abril', v:[8, 1, 0, 0, 0] },
-  { dia:'02/04', mes:'abril', v:[1, 2, 2, 0, 7] },
+  { dia:'02/04', mes:'abril', v:[2, 0, 2, 0, 2] },
   { dia:'03/04', mes:'abril', v:[1, 2, 0, 0, 0] },
-  { dia:'04/04', mes:'abril', v:[4, 2, 0, 0, 15] },
-  { dia:'05/04', mes:'abril', v:[4, 1, 0, 0, 1] },
-  { dia:'06/04', mes:'abril', v:[2, 3, 2, 0, 4] },
-  { dia:'07/04', mes:'abril', v:[2, 1, 6, 0, 8] },
+  { dia:'04/04', mes:'abril', v:[0, 0, 0, 0, 0] },
+  { dia:'05/04', mes:'abril', v:[1, 0, 0, 0, 1] },
+  { dia:'06/04', mes:'abril', v:[2, 0, 2, 0, 2] },
+  { dia:'07/04', mes:'abril', v:[6, 0, 6, 0, 6] },
   { dia:'08/04', mes:'abril', v:[0, 0, 3, 4, 0] },
   { dia:'09/04', mes:'abril', v:[4, 1, 2, 2, 0] },
   { dia:'10/04', mes:'abril', v:[2, 0, 0, 0, 0] },
@@ -638,18 +638,23 @@ const allDays = [
   { dia:'19/05', mes:'maio', v:[8, 1, 2, 4, 10] },
   { dia:'20/05', mes:'maio', v:[7, 1, 5, 1, 2] },
   { dia:'21/05', mes:'maio', v:[4, 4, 6, 1, 5] },
-  { dia:'22/05', mes:'maio', v:[0, 0, 9, 1, 4] },
-  { dia:'23/05', mes:'maio', v:[0, 0, 4, 7, 20] }
+  { dia:'22/05', mes:'maio', v:[7, 6, 9, 1, 4] },
+  { dia:'23/05', mes:'maio', v:[17, 19, 4, 7, 20] },
+  { dia:'24/05', mes:'maio', v:[2, 0, 2, 2, 0] },
+  { dia:'25/05', mes:'maio', v:[5, 7, 15, 0, 5] },
+  { dia:'26/05', mes:'maio', v:[4, 3, 7, 0, 7] },
+  { dia:'27/05', mes:'maio', v:[5, 5, 6, 2, 5] },
+  { dia:'28/05', mes:'maio', v:[4, 4, 7, 5, 5] }
 ];
 
 const PROSPECCAO = [
-  { name:'Agendada', value:817 },
-  { name:'Espontanea', value:117 },
-  { name:'Retorno', value:66 },
+  { name:'Agendada', value:956 },
+  { name:'Espontanea', value:130 },
+  { name:'Retorno', value:70 },
   { name:'Outros', value:12 }
 ];
 
-const PROSPECCAO_PERIODO = '08/04 a 23/05';
+const PROSPECCAO_PERIODO = '08/04 a 28/05';
 
 const EVENTS = [
   { dia:'14/03', desc:'Sábado pico Março', total:35 },
@@ -663,13 +668,16 @@ const EVENTS = [
   { dia:'29/04', desc:'Pico de visitas', total:35 },
   { dia:'09/05', desc:'Evento Pitangueira', total:60 },
   { dia:'16/05', desc:'Pico Maio Saturday', total:73 }
+,
+  { dia:'23/05', desc:'Sábado forte (67 visitas)', total:67 },
+  { dia:'25/05', desc:'Segunda forte (32 visitas)', total:32 }
 ];
 
 const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
   { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
-  { id:'maio', label:'Maio 2026', period:'01/05/2026 a 23/05/2026', prev:'abril' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 23/05/2026', prev:null }
+  { id:'maio', label:'Maio 2026', period:'01/05/2026 a 28/05/2026', prev:'abril' },
+  { id:'total', label:'Total Geral', period:'11/03/2026 a 28/05/2026', prev:null }
 ];
 // ===DATA-END===
 
