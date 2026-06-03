@@ -536,9 +536,9 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">02/06/2026 00:42</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">03/06/2026 00:42</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
       <button class="refresh-btn" id="btn-refresh">↻ Atualizar dados</button>
     </div>
   </footer>
@@ -647,17 +647,18 @@ const allDays = [
   { dia:'28/05', mes:'maio', v:[4, 4, 7, 5, 5] },
   { dia:'29/05', mes:'maio', v:[5, 1, 7, 1, 8] },
   { dia:'30/05', mes:'maio', v:[5, 8, 25, 1, 22] },
-  { dia:'31/05', mes:'maio', v:[0, 0, 0, 0, 1] }
+  { dia:'31/05', mes:'maio', v:[7, 0, 0, 0, 1] },
+  { dia:'01/06', mes:'junho', v:[1, 4, 0, 0, 5] }
 ];
 
 const PROSPECCAO = [
-  { name:'Agendada', value:1033 },
-  { name:'Espontanea', value:131 },
-  { name:'Retorno', value:76 },
+  { name:'Agendada', value:1044 },
+  { name:'Espontanea', value:133 },
+  { name:'Retorno', value:80 },
   { name:'Outros', value:12 }
 ];
 
-const PROSPECCAO_PERIODO = '08/04 a 31/05';
+const PROSPECCAO_PERIODO = '08/04 a 01/06';
 
 const EVENTS = [
   { dia:'14/03', desc:'Sábado pico Março', total:35 },
@@ -681,7 +682,8 @@ const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
   { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
   { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 31/05/2026', prev:null }
+  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 01/06/2026', prev:'maio' },
+  { id:'total', label:'Total Geral', period:'11/03/2026 a 01/06/2026', prev:null }
 ];
 // ===DATA-END===
 
