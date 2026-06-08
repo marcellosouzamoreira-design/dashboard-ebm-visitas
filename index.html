@@ -536,9 +536,9 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">07/06/2026 00:53</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">08/06/2026 00:50</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
       <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
     </div>
   </footer>
@@ -564,7 +564,8 @@ const STANDS = ['NOW Laguna','NOW 111','Pitangueira','Pq. America','NOW BSB'];
 const STAND_COLORS = { 'NOW Laguna':'#003D6B','NOW 111':'#5C7E9C','Pitangueira':'#1B5A8C','Pq. America':'#A0BAD0','NOW BSB':'#A4001B' };
 const REPORTADOR_STANDS = { Rayanne:['NOW Laguna','NOW 111'], Ramon:['Pitangueira','Pq. America'], Renato:['NOW BSB'] };
 
-// ===DATA-START===const allDays = [
+// ===DATA-START===
+const allDays = [
   { dia:'11/03', mes:'marco', v:[6, 0, 1, 4, 1] },
   { dia:'12/03', mes:'marco', v:[3, 1, 3, 4, 4] },
   { dia:'13/03', mes:'marco', v:[2, 1, 4, 11, 2] },
@@ -683,7 +684,8 @@ const MONTHS = [
   { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
   { id:'junho', label:'Junho 2026', period:'01/06/2026 a 05/06/2026', prev:'maio' },
   { id:'total', label:'Total Geral', period:'11/03/2026 a 05/06/2026', prev:null }
-];// ===DATA-END===
+];
+// ===DATA-END===
 
 // === DADOS ESTÁTICOS ADICIONAIS (canais, top corretores, imobiliárias) ===
 const CANAIS = [
