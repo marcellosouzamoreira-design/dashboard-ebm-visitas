@@ -536,10 +536,10 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">16/06/2026 00:47</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">17/06/2026 00:49</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Atualizacao automatica diaria as 00:30</span>
+      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
     </div>
   </footer>
 
@@ -660,16 +660,17 @@ const allDays = [
   { dia:'10/06', mes:'junho', v:[4, 2, 5, 1, 7] },
   { dia:'11/06', mes:'junho', v:[6, 1, 5, 0, 4] },
   { dia:'12/06', mes:'junho', v:[4, 2, 5, 0, 5] },
-  { dia:'13/06', mes:'junho', v:[0, 0, 9, 1, 15] },
-  { dia:'14/06', mes:'junho', v:[0, 0, 6, 1, 0] }
+  { dia:'13/06', mes:'junho', v:[3, 4, 9, 1, 15] },
+  { dia:'14/06', mes:'junho', v:[1, 1, 6, 1, 0] },
+  { dia:'15/06', mes:'junho', v:[5, 2, 0, 0, 6] }
 ];
 const PROSPECCAO = [
-  { name:'Agendada', value:1217 },
+  { name:'Agendada', value:1234 },
   { name:'Espontanea', value:152 },
-  { name:'Retorno', value:91 },
+  { name:'Retorno', value:96 },
   { name:'Outros', value:12 }
 ];
-const PROSPECCAO_PERIODO = '08/04 a 14/06';
+const PROSPECCAO_PERIODO = '08/04 a 15/06';
 const EVENTS = [
   { dia:'14/03', desc:'Sábado pico Março', total:35 },
   { dia:'15/03', desc:'Pico de visitas', total:32 },
@@ -684,14 +685,15 @@ const EVENTS = [
   { dia:'16/05', desc:'Pico Maio Saturday', total:73 },
   { dia:'23/05', desc:'Sábado forte (67 visitas)', total:67 },
   { dia:'25/05', desc:'Segunda forte (32 visitas)', total:32 },
-  { dia:'30/05', desc:'Sábado forte (48 visitas)', total:48 }
+  { dia:'30/05', desc:'Sábado forte (48 visitas)', total:48 },
+  { dia:'13/06', desc:'Pico de visitas (32 visitas)', total:32 }
 ];
 const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
   { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
   { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
-  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 14/06/2026', prev:'maio' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 14/06/2026', prev:null }
+  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 15/06/2026', prev:'maio' },
+  { id:'total', label:'Total Geral', period:'11/03/2026 a 15/06/2026', prev:null }
 ];
 // ===DATA-END===
 
