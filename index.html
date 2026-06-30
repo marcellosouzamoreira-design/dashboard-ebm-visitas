@@ -536,7 +536,7 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">29/06/2026 00:52</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">30/06/2026 00:45</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
       <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
@@ -674,16 +674,17 @@ const allDays = [
   { dia:'24/06', mes:'junho', v:[0, 0, 4, 1, 5] },
   { dia:'25/06', mes:'junho', v:[0, 0, 9, 0, 3] },
   { dia:'26/06', mes:'junho', v:[0, 0, 7, 0, 6] },
-  { dia:'27/06', mes:'junho', v:[0, 0, 0, 0, 13] },
-  { dia:'28/06', mes:'junho', v:[0, 0, 1, 0, 4] },
+  { dia:'27/06', mes:'junho', v:[10, 4, 0, 0, 13] },
+  { dia:'28/06', mes:'junho', v:[0, 1, 1, 0, 4] },
+  { dia:'29/06', mes:'junho', v:[0, 0, 0, 0, 3] },
 ];
 const PROSPECCAO = [
-  { name:'Agendada', value:1411 },
-  { name:'Espontanea', value:168 },
-  { name:'Retorno', value:110 },
+  { name:'Agendada', value:1426 },
+  { name:'Espontanea', value:169 },
+  { name:'Retorno', value:112 },
   { name:'Outros', value:12 },
 ];
-const PROSPECCAO_PERIODO = '08/04 a 28/06';
+const PROSPECCAO_PERIODO = '08/04 a 29/06';
 const EVENTS = [
   { dia:'14/03', desc:'Sábado pico Março', total:35 },
   { dia:'15/03', desc:'Pico de visitas', total:32 },
@@ -705,8 +706,8 @@ const MONTHS = [
   { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
   { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
   { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
-  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 28/06/2026', prev:'maio' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 28/06/2026', prev:null },
+  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 29/06/2026', prev:'maio' },
+  { id:'total', label:'Total Geral', period:'11/03/2026 a 29/06/2026', prev:null },
 ];
 // ===DATA-END===
 
