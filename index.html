@@ -536,10 +536,10 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">19/07/2026 00:42</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">20/07/2026 00:44</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
       <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <span style="font-size:11px;color:var(--gray-500)">Atualizacao automatica diaria as 00:30</span>
     </div>
   </footer>
 
@@ -695,26 +695,25 @@ const allDays = [
   {dia:'15/07',mes:'julho',v:[2,3,7,2,11]},
   {dia:'16/07',mes:'julho',v:[8,5,5,0,7]},
   {dia:'17/07',mes:'julho',v:[2,3,2,0,9]},
-  {dia:'18/07',mes:'julho',v:[0,0,8,9,23]}
+  {dia:'18/07',mes:'julho',v:[0,0,8,9,23]},
+  {dia:'19/07',mes:'julho',v:[0,0,0,0,6]}
 ];
 
 const PROSPECCAO = [
-  {name:'Agendada',value:1756},
-  {name:'Espontanea',value:207},
-  {name:'Retorno',value:132},
-  {name:'Outros',value:12}
+  {semana:'Total',agendada:1759,espontanea:207,retorno:135,outros:12}
 ];
 
-const PROSPECCAO_PERIODO = '08/04 a 18/07';
+const PROSPECCAO_PERIODO = '08/04 a 19/07';
 
 const MONTHS = [
-  { id:'marco', label:'Marco 2026', period:'11/03/2026 a 31/03/2026', prev:null },
-  { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
-  { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
-  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 30/06/2026', prev:'maio' },
-  { id:'julho', label:'Julho 2026', period:'01/07/2026 a 18/07/2026', prev:'junho' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 18/07/2026', prev:null }
+  {id:'marco',label:'Marco 2026',period:'11/03/2026 a 31/03/2026',prev:null},
+  {id:'abril',label:'Abril 2026',period:'01/04/2026 a 30/04/2026',prev:'marco'},
+  {id:'maio',label:'Maio 2026',period:'01/05/2026 a 31/05/2026',prev:'abril'},
+  {id:'junho',label:'Junho 2026',period:'01/06/2026 a 30/06/2026',prev:'maio'},
+  {id:'julho',label:'Julho 2026',period:'01/07/2026 a 19/07/2026',prev:'junho'},
+  {id:'total',label:'Total Geral',period:'11/03/2026 a 19/07/2026',prev:null}
 ];
+
 
 const EVENTS = [
 { dia:'14/03', desc:'Sábado pico Março', total:35 },
@@ -732,8 +731,10 @@ const EVENTS = [
   { dia:'25/05', desc:'Segunda forte (32 visitas)', total:32 },
   { dia:'30/05', desc:'Sábado forte (48 visitas)', total:48 },
   { dia:'13/06', desc:'Pico de visitas (32 visitas)', total:32 },
-      {dia:'04/07',desc:'Dia forte (39 visitas)',total:39}
-    ];
+      {dia:'04/07',desc:'Dia forte (39 visitas)',total:39},
+  { dia:'18/07', desc:'Dia de pico', total:40 }
+];
+
 // ===DATA-END===
 
 // === DADOS ESTÁTICOS ADICIONAIS (canais, top corretores, imobiliárias) ===
@@ -1401,7 +1402,7 @@ document.getElementById('btn-csv').addEventListener('click', exportCSV);
     btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
     try {
       if (window.cowork && typeof window.cowork.runScheduledTask === 'function') {
-        await (() => {})();
+        await void 0;
         btn.textContent = '✓ Coleta disparada — peça pra reconstruir';
       } else { btn.textContent = '⚠ runScheduledTask indisponível'; }
     } catch (e) { btn.textContent = '✗ Falha'; }
