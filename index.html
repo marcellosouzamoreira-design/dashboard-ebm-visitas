@@ -536,10 +536,10 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">22/07/2026 00:44</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">23/07/2026 00:47</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
-      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
-      <button class="refresh-btn" id="btn-refresh">↻ Atualizar dados</button>
+      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
     </div>
   </footer>
 
@@ -701,22 +701,16 @@ const allDays = [
   {dia:'21/07',mes:'julho',v:[0,0,0,0,20]}
 ];
 
-const PROSPECCAO = [
-  {cat:'Agendada',val:1781},
-  {cat:'Espontanea',val:211},
-  {cat:'Retorno',val:139},
-  {cat:'Outros',val:12}
-];
-
+const PROSPECCAO = [{cat:'Agendada',val:1781},{cat:'Espontanea',val:211},{cat:'Retorno',val:139},{cat:'Outros',val:12}];
 const PROSPECCAO_PERIODO = '08/04 a 21/07';
 
 const MONTHS = [
-  { id:'marco', label:'Março 2026', period:'11/03/2026 a 31/03/2026', prev:null },
-  { id:'abril', label:'Abril 2026', period:'01/04/2026 a 30/04/2026', prev:'marco' },
-  { id:'maio', label:'Maio 2026', period:'01/05/2026 a 31/05/2026', prev:'abril' },
-  { id:'junho', label:'Junho 2026', period:'01/06/2026 a 30/06/2026', prev:'maio' },
-  { id:'julho', label:'Julho 2026', period:'01/07/2026 a 21/07/2026', prev:'junho' },
-  { id:'total', label:'Total Geral', period:'11/03/2026 a 21/07/2026', prev:null }
+  {id:'marco',label:'Marco 2026',period:'11/03/2026 a 31/03/2026',prev:null},
+  {id:'abril',label:'Abril 2026',period:'01/04/2026 a 30/04/2026',prev:'marco'},
+  {id:'maio',label:'Maio 2026',period:'01/05/2026 a 31/05/2026',prev:'abril'},
+  {id:'junho',label:'Junho 2026',period:'01/06/2026 a 30/06/2026',prev:'maio'},
+  {id:'julho',label:'Julho 2026',period:'01/07/2026 a 21/07/2026',prev:'junho'},
+  {id:'total',label:'Total Geral',period:'11/03/2026 a 21/07/2026',prev:null}
 ];
 
 const EVENTS = [
