@@ -536,9 +536,9 @@
   </div>
 
   <footer>
-    <span>Última coleta: <strong id="last-updated">23/07/2026 00:47</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
+    <span>Última coleta: <strong id="last-updated">24/07/2026 00:44</strong> &middot; Origem: Excel Março + Excel Abril 01-07/04 + JSX 08/04+</span>
     <div class="footer-actions">
-      <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
+      <button class="refresh-btn" id="btn-csv">⬇ Exportar CSV</button>
       <span style="font-size:11px;color:var(--gray-500)">Atualização automática diária às 00:30</span>
     </div>
   </footer>
@@ -565,6 +565,7 @@ const STAND_COLORS = { 'NOW Laguna':'#003D6B','NOW 111':'#5C7E9C','Pitangueira':
 const REPORTADOR_STANDS = { Rayanne:['NOW Laguna','NOW 111'], Ramon:['Pitangueira','Pq. America'], Renato:['NOW BSB'] };
 
 // ===DATA-START===
+
 const allDays = [
   {dia:'11/03',mes:'marco',v:[6,0,1,4,1]},
   {dia:'12/03',mes:'marco',v:[3,1,3,4,4]},
@@ -698,19 +699,25 @@ const allDays = [
   {dia:'18/07',mes:'julho',v:[2,1,8,9,23]},
   {dia:'19/07',mes:'julho',v:[1,1,0,0,6]},
   {dia:'20/07',mes:'julho',v:[0,0,0,0,5]},
-  {dia:'21/07',mes:'julho',v:[0,0,0,0,20]}
+  {dia:'21/07',mes:'julho',v:[0,0,0,0,20]},
+  {dia:'23/07',mes:'julho',v:[0,0,0,0,4]}
 ];
 
-const PROSPECCAO = [{cat:'Agendada',val:1781},{cat:'Espontanea',val:211},{cat:'Retorno',val:139},{cat:'Outros',val:12}];
-const PROSPECCAO_PERIODO = '08/04 a 21/07';
+const PROSPECCAO = [
+  {tipo:'Agendada',valor:1783},
+  {tipo:'Espontanea',valor:211},
+  {tipo:'Retorno',valor:141},
+  {tipo:'Outros',valor:12}
+];
+const PROSPECCAO_PERIODO = '08/04/2026 a 23/07/2026';
 
 const MONTHS = [
-  {id:'marco',label:'Marco 2026',period:'11/03/2026 a 31/03/2026',prev:null},
+  {id:'marco',label:'Março 2026',period:'11/03/2026 a 31/03/2026',prev:null},
   {id:'abril',label:'Abril 2026',period:'01/04/2026 a 30/04/2026',prev:'marco'},
   {id:'maio',label:'Maio 2026',period:'01/05/2026 a 31/05/2026',prev:'abril'},
   {id:'junho',label:'Junho 2026',period:'01/06/2026 a 30/06/2026',prev:'maio'},
-  {id:'julho',label:'Julho 2026',period:'01/07/2026 a 21/07/2026',prev:'junho'},
-  {id:'total',label:'Total Geral',period:'11/03/2026 a 21/07/2026',prev:null}
+  {id:'julho',label:'Julho 2026',period:'01/07/2026 a 23/07/2026',prev:'junho'},
+  {id:'total',label:'Total Geral',period:'11/03/2026 a 23/07/2026',prev:null}
 ];
 
 const EVENTS = [
@@ -732,6 +739,7 @@ const EVENTS = [
       {dia:'04/07',desc:'Dia forte (39 visitas)',total:39},
   { dia:'18/07', desc:'Dia de pico', total:40 }
 ];
+
 // ===DATA-END===
 
 // === DADOS ESTÁTICOS ADICIONAIS (canais, top corretores, imobiliárias) ===
@@ -1393,7 +1401,7 @@ document.getElementById('btn-help').addEventListener('click', () => {
 document.getElementById('btn-csv').addEventListener('click', exportCSV);
 
 (function() {
-  const btn = document.getElementById('btn-refresh');
+  const btn = // refresh button removed for public version
   if (!btn) return;
   btn.addEventListener('click', async () => {
     btn.disabled = true; const orig = btn.textContent; btn.textContent = '⟳ Disparando coleta...';
